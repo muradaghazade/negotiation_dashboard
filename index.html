@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Analytics - Ongoing Negotiations</title>
+    <style>
+        :root {
+            --text-muted: #64748b;
+            --text-dark: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+
+            --success-green: #10b981; 
+            --success-bg: #f0fdf4;
+            --info-blue: #0ea5e9; 
+            --info-bg: #f0f9ff;
+            --info-border: #7dd3fc; 
+            --target-purple: #8b5cf6; 
+            --target-bg: #f5f3ff;
+            --neutral-gray: #94a3b8;
+            --neutral-bg: #f1f5f9;
+            
+            --chart-achieved: #52b788;
+            --market-light: #e0e7ff;
+            --market-text: #4338ca;
+            --dmp-light: #f3e8ff;
+            --dmp-text: #6d28d9;
+            --hist-light: #fef9c3;
+            --hist-text: #b45309;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 26px; color: #1e293b; letter-spacing: -0.5px; }
+
+        /* =========================================
+           GLOBAL TOGGLE & FILTER BUTTON
+           ========================================= */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .global-toggle {
+            display: flex;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 10px;
+            gap: 2px;
+        }
+        .toggle-btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .toggle-btn.active {
+            background: white;
+            color: var(--text-dark);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .filter-trigger-btn {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* =========================================
+           FILTER DRAWER
+           ========================================= */
+        .filter-drawer {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 320px;
+            height: 100%;
+            background: white;
+            z-index: 10001;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-drawer.open { right: 0; }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: none;
+            z-index: 10000;
+        }
+
+        .filter-section { margin-bottom: 25px; }
+        .filter-title { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 800; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .demand-switch {
+            display: flex;
+            background: var(--bg-color);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .demand-btn {
+            flex: 1;
+            border: none;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-muted);
+        }
+        .demand-btn.active {
+            background: white;
+            color: var(--info-blue);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .scroll-filter-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Tooltip style */
+        .info-tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            background: var(--info-blue);
+            color: white;
+            border-radius: 50%;
+            font-size: 9px;
+            font-style: italic;
+            cursor: help;
+        }
+        .info-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e293b;
+            color: #fff;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 100;
+            top: 150%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 11px;
+        }
+        .info-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        /* Dashboard Components */
+        .main-negotiation-bridge { background-color: var(--card-bg); padding: 40px 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .bridge-column { flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .muted-label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+        .large-number { font-size: 38px; font-weight: bold; }
+        .column-right .large-number { color: var(--success-green); }
+        .hero-percentage { font-size: 72px; font-weight: 800; line-height: 1; display: flex; align-items: center; letter-spacing: -2px; margin-top: 10px;}
+        .down-arrow { font-size: 50px; margin-right: 5px; }
+        .top-coverage-pill { background-color: var(--info-bg); color: var(--info-blue); padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 800; text-transform: uppercase; border: 1px solid var(--info-border); margin-bottom: 5px; }
+        .saved-pill { display: inline-block; background-color: var(--pill-bg); color: var(--success-green); font-weight: bold; font-size: 15px; padding: 6px 14px; border-radius: 9999px; margin-top: 15px; border: 1px solid var(--border-color); }
+        .potential-indicator { margin-top: 15px; font-size: 14px; padding: 10px 18px; border-radius: 8px; border: 2px dashed var(--info-border); background-color: var(--info-bg); }
+        .potential-highlight { color: var(--info-blue); font-size: 20px; font-weight: 800; margin-left: 5px; }
+        .spectrum-container { background-color: var(--card-bg); padding: 40px 40px 90px 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; border: 1px solid var(--border-color); }
+        .spectrum-title { font-size: 15px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px; margin-bottom: 60px; }
+        .spectrum-title::before { content: ''; display: block; width: 10px; height: 10px; background-color: var(--target-purple); border-radius: 2px; }
+        .rail-wrapper { position: relative; width: 100%; height: 14px; }
+        .rail-base { position: absolute; width: 100%; height: 100%; background-color: var(--track-bg); border-radius: 9999px; }
+        .rail-achieved { position: absolute; right: 10%; width: 25%; height: 100%; background-color: var(--success-green); border-radius: 0 9999px 9999px 0; z-index: 2; }
+        .rail-gap { position: absolute; right: 35%; width: 25%; height: 100%; background: repeating-linear-gradient(-45deg, var(--target-light), var(--target-light) 10px, #e1ceff 10px, #e1ceff 20px); border: 2px solid var(--target-purple); z-index: 1; box-sizing: border-box; }
+        .rail-node { position: absolute; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 5; }
+        .node-dot { width: 12px; height: 12px; background-color: #fff; border: 3px solid #cbd5e1; border-radius: 50%; }
+        .node-target .node-dot { border-color: var(--target-purple); background-color: var(--target-purple); width: 18px; height: 18px; box-shadow: 0 0 0 5px var(--target-light); }
+        .node-current .node-dot { border-color: var(--info-blue); background-color: var(--info-blue); width: 18px; height: 18px; box-shadow: 0 0 0 5px var(--info-bg); }
+        .node-label { position: absolute; white-space: nowrap; text-align: center; }
+        .label-top { bottom: 25px; }
+        .label-bottom { top: 25px; }
+        .label-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+        .label-value { font-size: 14px; font-weight: 700; color: var(--text-dark); background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border-color); }
+        .floating-gap-badge { position: absolute; top: -50px; left: 52.5%; transform: translateX(-50%); background-color: var(--target-purple); color: white; padding: 5px 15px; border-radius: 9999px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); z-index: 10; }
+        .chart-container { background-color: var(--card-bg); padding: 30px 40px 180px 70px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); position: relative; margin-bottom: 24px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .chart-header h3 { margin: 0; font-size: 18px; font-weight: 700; }
+        .chart-legend { display: flex; gap: 15px; }
+        .legend-item { display: flex; align-items: center; font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; }
+        .chart-body { position: relative; height: 420px; margin-top: 20px; }
+        .y-axis-label { position: absolute; left: -60px; top: 50%; transform: translateY(-50%) rotate(-90deg); font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .x-axis-title { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .y-axis { position: absolute; left: -5px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; color: var(--text-muted); font-size: 12px; }
+        .chart-grid { position: absolute; left: 35px; right: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; }
+        .grid-line { width: 100%; border-top: 1px dashed #cbd5e1; }
+        .bars-area { display: flex; justify-content: space-around; align-items: flex-end; height: 100%; padding-left: 35px; z-index: 2; position: relative; }
+        .bar-group { width: 12%; height: 100%; position: relative; display: flex; flex-direction: column; justify-content: flex-end; }
+        .segment { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-top: 1px solid #ffffff; overflow: hidden; text-align: center; line-height: 1.2; }
+        .seg-pct { font-size: 11px; font-weight: 800; }
+        .seg-price { font-size: 9px; font-weight: 600; opacity: 0.9; }
+        .segment.achieved { background-color: var(--chart-achieved); color: white; border-top: none; border-radius: 0 0 4px 4px; }
+        .segment.market { background-color: var(--market-light); color: var(--market-text); }
+        .segment.dmp { background-color: var(--dmp-light); color: var(--dmp-text); }
+        .segment.historical { background-color: var(--hist-light); color: var(--hist-text); border-radius: 4px 4px 0 0; }
+        .x-axis-label { position: absolute; top: calc(100% + 15px); right: 50%; transform: rotate(-45deg); transform-origin: top right; font-size: 11px; font-weight: 600; color: #475569; white-space: nowrap; }
+        .coverage-container { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 40px; border: 1px solid var(--border-color); }
+        .coverage-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+        .coverage-title-group h3 { margin: 0; font-size: 18px; font-weight: 700; }
+        .coverage-title-group p { margin: 5px 0 0 0; font-size: 13px; color: var(--text-muted); }
+        .scope-badge { display: flex; gap: 20px; align-items: center; }
+        .badge-item { text-align: right; }
+        .badge-value { font-size: 20px; font-weight: 800; color: var(--text-dark); display: block; line-height: 1.1; }
+        .badge-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+        .coverage-percent-badge { background-color: var(--info-bg); border: 1px solid var(--info-border); padding: 8px 15px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; }
+        .coverage-percent-badge .val { color: var(--info-blue); font-size: 24px; font-weight: 900; line-height: 1; }
+        .coverage-percent-badge .lbl { color: var(--info-blue); font-size: 9px; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
+        .dist-bar { width: 100%; height: 12px; background-color: var(--neutral-bg); border-radius: 9999px; display: flex; overflow: hidden; margin-bottom: 30px; }
+        .dist-fill { height: 100%; transition: width 0.3s ease; }
+        .dist-target { background-color: var(--success-green); width: 36%; }
+        .dist-gap { background-color: var(--target-purple); width: 50%; }
+        .dist-none { background-color: var(--neutral-gray); width: 14%; }
+        .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .status-card { padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; }
+        .status-card.reached { background-color: var(--success-bg); border-color: #bbf7d0; }
+        .status-card.more { background-color: var(--target-bg); border-color: #ddd6fe; }
+        .status-card.untouched { background-color: var(--neutral-bg); border-color: #e2e8f0; }
+        .status-pct { font-size: 28px; font-weight: 800; display: block; line-height: 1; margin-bottom: 5px; }
+        .reached .status-pct { color: var(--success-green); }
+        .more .status-pct { color: var(--target-purple); }
+        .untouched .status-pct { color: var(--neutral-gray); }
+        .status-label { font-size: 13px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .status-metrics { display: flex; justify-content: space-between; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px; }
+        .stat-group .val { font-size: 16px; font-weight: 700; color: var(--text-dark); display: block; }
+        .stat-group .lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .item-chart-container { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); margin-bottom: 40px; position: relative; }
+        .hz-chart-body { display: flex; flex-direction: column; margin-top: 10px; }
+        .hz-row { display: flex; align-items: center; margin-bottom: 12px; height: 42px; }
+        .hz-label { width: 220px; font-size: 11px; font-weight: 700; color: var(--text-dark); padding-right: 15px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hz-bar-stack { flex-grow: 1; height: 100%; display: flex; background-color: var(--neutral-bg); border-radius: 4px; overflow: hidden; position: relative; }
+        .hz-segment { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #ffffff; transition: filter 0.2s, width 0.3s ease; overflow: hidden; min-width: 0; }
+        .hz-segment:hover { filter: brightness(1.05); cursor: pointer; }
+        .hz-seg-pct { font-size: 10px; font-weight: 800; line-height: 1; }
+        .hz-seg-price { font-size: 8.5px; font-weight: 600; opacity: 0.9; margin-top: 1px; }
+        .hz-segment.achieved { background-color: var(--chart-achieved); color: white; border-right: none; }
+        .hz-segment.market { background-color: var(--market-light); color: var(--market-text); }
+        .hz-segment.dmp { background-color: var(--dmp-light); color: var(--dmp-text); }
+        .hz-segment.historical { background-color: var(--hist-light); color: var(--hist-text); }
+        .sort-select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 600; color: var(--text-dark); background-color: #fff; cursor: pointer; outline: none; }
+        .sort-select:focus { border-color: var(--info-blue); }
+        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 9999; overflow-y: auto; padding: 40px; box-sizing: border-box; }
+        .fullscreen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .btn-close { background: var(--text-dark); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .expand-btn { background: var(--info-blue); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-left: 10px; }
+        .filter-group { display: flex; gap: 15px; align-items: center; }
+        .pricebook-filter { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="drawer-overlay" id="overlay" onclick="toggleDrawer(false)"></div>
+
+    <div class="filter-drawer" id="filterDrawer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin:0; font-size: 20px;">Advanced Filters</h2>
+            <button onclick="toggleDrawer(false)" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+
+        <div class="filter-section">
+            <label class="filter-title">
+                Demand Basis
+                <span class="info-tooltip">i
+                    <span class="tooltip-text">DMP Forecast calculates demand using a regression model based on historical PO quantities.</span>
+                </span>
+            </label>
+            <div class="demand-switch">
+                <button class="demand-btn active" onclick="setDemand('hist', this)">Historical</button>
+                <button class="demand-btn" onclick="setDemand('dmp', this)">DMP Forecast</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <label class="filter-title">Filter by Pricebook</label>
+            <div class="scroll-filter-list" id="pbFilterList"></div>
+        </div>
+
+        <div class="filter-section">
+            <label class="filter-title">Filter by Supplier</label>
+            <div class="scroll-filter-list" id="supFilterList"></div>
+        </div>
+
+        <div class="filter-section">
+            <label class="filter-title">Filter by Category</label>
+            <div class="scroll-filter-list" id="catFilterList"></div>
+        </div>
+
+        <div style="margin-top: auto;">
+            <button onclick="toggleDrawer(false)" class="filter-trigger-btn" style="width: 100%; justify-content: center;">Apply & Close</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Ongoing Negotiations</h1>
+                <p>A complete view of current commercial data and negotiated savings.</p>
+            </div>
+            <div class="header-actions">
+                <div class="global-toggle">
+                    <button class="toggle-btn active" onclick="setGlobalView('all')">All</button>
+                    <button class="toggle-btn" onclick="setGlobalView('hist')">Historical</button>
+                    <button class="toggle-btn" onclick="setGlobalView('mkt')">Market</button>
+                    <button class="toggle-btn" onclick="setGlobalView('dmp')">DMP Forecast</button>
+                </div>
+                <button class="filter-trigger-btn" onclick="toggleDrawer(true)">
+                    <span>Filters</span>
+                    <small>▼</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="main-negotiation-bridge">
+            <div class="bridge-column column-left">
+                <div class="muted-label">Original Offer</div>
+                <div class="large-number">$21,733,461</div>
+            </div>
+            
+            <div class="bridge-column column-center">
+                <div class="top-coverage-pill" id="topCoveragePill">Negotiation Coverage: 80%</div>
+                <div class="hero-percentage"><span class="down-arrow">▼</span>6.4%</div>
+                <div class="muted-label" style="margin-bottom: 0;">Off Original Offer</div>
+                <div class="saved-pill">SAVED $1,383,500</div>
+                
+                <div class="potential-indicator">
+                    Potential further savings: <span class="potential-highlight" id="potentialSavingsLabel">~2.2% ($478,136)</span>
+                </div>
+            </div>
+
+            <div class="bridge-column column-right">
+                <div class="muted-label">Negotiated To</div>
+                <div class="large-number">$20,349,961</div>
+            </div>
+        </div>
+
+        <div class="spectrum-container">
+            <div class="spectrum-title">Price Target & Benchmarks</div>
+            <div class="rail-wrapper" id="benchmarkRail">
+                <div class="rail-base"></div>
+                <div class="rail-achieved"></div>
+                <div class="rail-gap" id="railGapVisual"></div>
+                <div class="floating-gap-badge" id="gapBadge">Gap to Target: $900K</div>
+
+                <div class="rail-node" style="left: 10%;" id="node-hist">
+                    <div class="node-dot"></div>
+                    <div class="node-label label-bottom"><div class="label-title">Best Hist.</div><div class="label-value">$18.5M</div></div>
+                </div>
+                <div class="rail-node" style="left: 25%;" id="node-mkt">
+                    <div class="node-dot"></div>
+                    <div class="node-label label-bottom"><div class="label-title">Market</div><div class="label-value">$18.9M</div></div>
+                </div>
+                <div class="rail-node node-target" style="left: 40%;" id="node-dmp">
+                    <div class="node-dot"></div>
+                    <div class="node-label label-top"><div class="label-title">DMP Forecast</div><div class="label-value">$19.4M</div></div>
+                </div>
+                <div class="rail-node node-current" style="left: 65%;">
+                    <div class="node-dot"></div>
+                    <div class="node-label label-top"><div class="label-title">Negotiated To</div><div class="label-value">$20.3M</div></div>
+                </div>
+                <div class="rail-node" style="left: 90%;" id="node-orig">
+                    <div class="node-dot"></div>
+                    <div class="node-label label-bottom"><div class="label-title">Original Offer</div><div class="label-value">$21.7M</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Discount Gap Analysis by Pricebook</h3>
+                <div class="chart-legend" id="pbLegend">
+                    <div class="legend-item"><div class="legend-color achieved" style="background: #52b788"></div>Achieved</div>
+                    <div class="legend-item" id="leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
+                    <div class="legend-item" id="leg-dmp"><div class="legend-color dmp" style="background: #f3e8ff"></div>Left to DMP Forecast</div>
+                    <div class="legend-item" id="leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
+                </div>
+            </div>
+
+            <div class="chart-body">
+                <div class="y-axis-label">Discount %</div>
+                <div class="y-axis"><span>15%</span><span>12%</span><span>9%</span><span>6%</span><span>3%</span><span>0%</span></div>
+                <div class="chart-grid"><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div></div>
+
+                <div class="bars-area" id="pricebookBars"></div>
+            </div>
+            <div class="x-axis-title">Pricebook</div>
+        </div>
+
+        <div class="coverage-container">
+            <div class="coverage-header">
+                <div class="coverage-title-group">
+                    <h3>Negotiation Coverage & Status</h3>
+                    <p>Analysis of item-level progress across all pricebooks.</p>
+                </div>
+                <div class="scope-badge">
+                    <div class="coverage-percent-badge">
+                        <span class="val" id="coverageBadgeVal">80%</span>
+                        <span class="lbl">Data Coverage</span>
+                    </div>
+                    <div class="badge-item">
+                        <span class="badge-value">381</span>
+                        <span class="badge-label">Total Items</span>
+                    </div>
+                    <div class="badge-item">
+                        <span class="badge-value" id="pbCount">12</span>
+                        <span class="badge-label">Pricebooks</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dist-bar">
+                <div id="bar-target" class="dist-fill dist-target" style="width: 36%"></div>
+                <div id="bar-gap" class="dist-fill dist-gap" style="width: 50%"></div>
+                <div id="bar-none" class="dist-fill dist-none" style="width: 14%"></div>
+            </div>
+
+            <div class="status-grid">
+                <div class="status-card reached">
+                    <span class="status-pct" id="card-reached-pct">36%</span>
+                    <span class="status-label">Negotiated to Target</span>
+                    <div class="status-metrics">
+                        <div class="stat-group"><span class="val" id="card-reached-cnt">137</span><span class="lbl">Items</span></div>
+                        <div class="stat-group" style="text-align: right;"><span class="val" style="color: var(--success-green);">$262,400</span><span class="lbl">Achieved Savings</span></div>
+                    </div>
+                </div>
+
+                <div class="status-card more">
+                    <span class="status-pct" id="card-more-pct">50%</span>
+                    <span class="status-label">Should Negotiate More</span>
+                    <div class="status-metrics">
+                        <div class="stat-group"><span class="val" id="card-more-cnt">190</span><span class="lbl">Items</span></div>
+                        <div class="stat-group" style="text-align: right;"><span class="val" style="color: var(--target-purple);" id="card-more-sav">$145,200</span><span class="lbl">Potential Savings</span></div>
+                    </div>
+                </div>
+
+                <div class="status-card untouched">
+                    <span class="status-pct" id="card-none-pct">14%</span>
+                    <span class="status-label">Not Negotiated At All</span>
+                    <div class="status-metrics">
+                        <div class="stat-group"><span class="val" id="card-none-cnt">54</span><span class="lbl">Items</span></div>
+                        <div class="stat-group" style="text-align: right;"><span class="val" style="color: var(--neutral-gray);" id="card-none-sav">$51,800</span><span class="lbl">Untapped Savings</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="item-chart-container" id="itemChartSection">
+            <div class="chart-header">
+                <h3>Top 10 Discount Gap Analysis by Item</h3>
+                <div style="display:flex; align-items:center;">
+                    <select id="itemSortSelect" class="sort-select">
+                        <option value="ach">Sort by Achieved Discount</option>
+                        <option value="mkt">Sort by Left to Market</option>
+                        <option value="dmp">Sort by Left to DMP Forecast</option>
+                        <option value="hist">Sort by Left Historical Best</option>
+                        <option value="pot">Sort by Total Potential</option>
+                    </select>
+                    <button class="expand-btn" id="expandChartBtn">See All Items</button>
+                </div>
+            </div>
+
+            <div class="chart-legend" style="margin-bottom:20px; justify-content:flex-end;">
+                <div class="legend-item"><div class="legend-color achieved" style="background: #52b788"></div>Achieved</div>
+                <div class="legend-item leg-seg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
+                <div class="legend-item leg-seg-dmp"><div class="legend-color dmp" style="background: #f3e8ff"></div>Left to DMP Forecast</div>
+                <div class="legend-item leg-seg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
+            </div>
+
+            <div id="itemHzChartBody" class="hz-chart-body"></div>
+        </div>
+    </div>
+
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <div class="fullscreen-header">
+            <div>
+                <h2 style="margin:0">Full Item Analysis (All 381 Items)</h2>
+            </div>
+            <button class="btn-close" id="closeFullscreenBtn">Exit Full Screen</button>
+        </div>
+        <div id="fullscreenChartBody" class="hz-chart-body"></div>
+    </div>
+
+    <script>
+        let globalView = 'all';
+        let demandBasis = 'hist';
+        let filters = { pb: [], sup: [], cat: [] };
+
+        const pricebooks = ["Instruments", "Hydraulics", "Electronics", "Bearings", "Tools", "Safety"];
+        const suppliers = ["Vendor Alpha", "Global Parts", "Tech Systems", "Apex Ltd"];
+        const categories = ["Core", "Support", "Critical", "Secondary"];
+
+        const itemsData = [];
+        for (let i = 1; i <= 381; i++) {
+            const pb = pricebooks[Math.floor(Math.random() * pricebooks.length)];
+            const sup = suppliers[Math.floor(Math.random() * suppliers.length)];
+            const cat = categories[Math.floor(Math.random() * categories.length)];
+            itemsData.push({
+                name: `Item-SKU-${1000 + i}`, pb, sup, cat,
+                ach: parseFloat((Math.random() * 8 + 12).toFixed(1)),
+                achPrice: `$${(Math.random() * 40 + 60).toFixed(0)}k`,
+                mkt: parseFloat((Math.random() * 4 + 4).toFixed(1)),
+                dmp: parseFloat((Math.random() * 4 + 4).toFixed(1)),
+                hist: parseFloat((Math.random() * 4 + 4).toFixed(1)),
+            });
+        }
+
+        const pricebookSummary = [
+            { name: "PB-Instruments-2026", ach: 7.5, achPrice: "$290K", mkt: 1.5, dmp: 1.8, hist: 2.2 },
+            { name: "PB-Hydraulics-2026", ach: 6.2, achPrice: "$210K", mkt: 1.4, dmp: 1.8, hist: 1.8 },
+            { name: "PB-Electronics-2026", ach: 5.5, achPrice: "$165K", mkt: 1.2, dmp: 1.5, hist: 1.5 }
+        ];
+
+        function toggleDrawer(show) {
+            document.getElementById('filterDrawer').classList.toggle('open', show);
+            document.getElementById('overlay').style.display = show ? 'block' : 'none';
+        }
+
+        function setDemand(basis, btn) {
+            demandBasis = basis;
+            document.querySelectorAll('.demand-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateUI();
+        }
+
+        function buildFilterList(id, list, key) {
+            const container = document.getElementById(id);
+            list.forEach(val => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-row';
+                label.innerHTML = `<input type="checkbox" value="${val}"> ${val}`;
+                label.querySelector('input').onchange = (e) => {
+                    if(e.target.checked) filters[key].push(val);
+                    else filters[key] = filters[key].filter(x => x !== val);
+                    updateUI();
+                };
+                container.appendChild(label);
+            });
+        }
+
+        function setGlobalView(view) {
+            globalView = view;
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                const text = btn.innerText.toLowerCase();
+                btn.classList.toggle('active', text.includes(view === 'dmp' ? 'dmp' : (view === 'mkt' ? 'market' : (view === 'hist' ? 'histor' : 'all'))));
+            });
+            updateUI();
+        }
+
+        function updateUI() {
+            updateBridgePotential();
+            updateCoverageBadges();
+            updateBenchmarks();
+            renderPricebookChart();
+            
+            const sortBy = document.getElementById('itemSortSelect').value;
+            let filtered = itemsData.filter(i => 
+                (filters.pb.length === 0 || filters.pb.includes(i.pb)) &&
+                (filters.sup.length === 0 || filters.sup.includes(i.sup)) &&
+                (filters.cat.length === 0 || filters.cat.includes(i.cat))
+            );
+
+            // Simulation of Demand calculation adjustment
+            const demandMultiplier = demandBasis === 'dmp' ? 1.12 : 1.0; 
+            
+            const sorted = filtered.sort((a,b) => {
+                if(sortBy === 'ach') return b.ach - a.ach;
+                if(sortBy === 'mkt') return b.mkt - a.mkt;
+                if(sortBy === 'dmp') return b.dmp - a.dmp;
+                if(sortBy === 'hist') return b.hist - a.hist;
+                return (b.mkt + b.dmp + b.hist) - (a.mkt + a.dmp + a.hist);
+            });
+
+            renderRows('itemHzChartBody', sorted.slice(0, 10), demandMultiplier);
+            renderRows('fullscreenChartBody', sorted, demandMultiplier);
+        }
+
+        function updateBridgePotential() {
+            const el = document.getElementById('potentialSavingsLabel');
+            if (globalView === 'all') el.innerHTML = `~2.2% ($478,136)`;
+            else if (globalView === 'mkt') el.innerHTML = `~1.3% ($280,400)`;
+            else if (globalView === 'dmp') el.innerHTML = `~1.8% ($390,200)`;
+            else if (globalView === 'hist') el.innerHTML = `~3.1% ($645,000)`;
+        }
+
+        function updateCoverageBadges() {
+            const topPill = document.getElementById('topCoveragePill');
+            const badgeVal = document.getElementById('coverageBadgeVal');
+            let coverage = globalView === 'mkt' ? "90%" : (globalView === 'dmp' ? "100%" : "80%");
+            topPill.innerText = `Negotiation Coverage: ${coverage}`;
+            badgeVal.innerText = coverage;
+        }
+
+        function updateBenchmarks() {
+            const nodes = { hist: document.getElementById('node-hist'), mkt: document.getElementById('node-mkt'), dmp: document.getElementById('node-dmp') };
+            const gapBadge = document.getElementById('gapBadge');
+            const visualGap = document.getElementById('railGapVisual');
+            Object.values(nodes).forEach(n => { n.style.opacity = "1"; n.classList.remove('node-target'); });
+
+            if (globalView === 'all') {
+                nodes.dmp.classList.add('node-target');
+                gapBadge.innerText = "Gap to Target: $900K";
+                visualGap.style.width = "25%"; visualGap.style.right = "35%";
+            } else {
+                Object.keys(nodes).forEach(key => { if (key !== globalView) nodes[key].style.opacity = "0"; else nodes[key].classList.add('node-target'); });
+                if(globalView === 'hist') { gapBadge.innerText = "Gap to Hist: $1.8M"; visualGap.style.width = "55%"; visualGap.style.right = "35%"; }
+                if(globalView === 'mkt') { gapBadge.innerText = "Gap to Market: $1.4M"; visualGap.style.width = "40%"; visualGap.style.right = "35%"; }
+                if(globalView === 'dmp') { gapBadge.innerText = "Gap to DMP: $900K"; visualGap.style.width = "25%"; visualGap.style.right = "35%"; }
+            }
+        }
+
+        function renderRows(containerId, data, mult) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const MAX_SCALE = 60.0;
+            data.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'hz-row';
+                let html = `<div class="hz-label">${item.name}<br><small style="color:var(--text-muted)">${item.sup}</small></div><div class="hz-bar-stack">`;
+                html += `<div class="hz-segment achieved" style="width: ${(item.ach/MAX_SCALE)*100}%"><span class="hz-seg-pct">${item.ach}%</span></div>`;
+                if (globalView === 'all' || globalView === 'mkt') html += `<div class="hz-segment market" style="width: ${(item.mkt*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.mkt*mult).toFixed(1)}%</span></div>`;
+                if (globalView === 'all' || globalView === 'dmp') html += `<div class="hz-segment dmp" style="width: ${(item.dmp*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.dmp*mult).toFixed(1)}%</span></div>`;
+                if (globalView === 'all' || globalView === 'hist') html += `<div class="hz-segment historical" style="width: ${(item.hist*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.hist*mult).toFixed(1)}%</span></div>`;
+                html += `</div>`;
+                row.innerHTML = html;
+                container.appendChild(row);
+            });
+        }
+
+        function renderPricebookChart() {
+            const container = document.getElementById('pricebookBars');
+            container.innerHTML = '';
+            document.getElementById('leg-mkt').style.display = (globalView === 'all' || globalView === 'mkt') ? 'flex' : 'none';
+            document.getElementById('leg-dmp').style.display = (globalView === 'all' || globalView === 'dmp') ? 'flex' : 'none';
+            document.getElementById('leg-hist').style.display = (globalView === 'all' || globalView === 'hist') ? 'flex' : 'none';
+            pricebookSummary.forEach(pb => {
+                const group = document.createElement('div');
+                group.className = 'bar-group';
+                let html = ``;
+                if (globalView === 'all' || globalView === 'hist') html += `<div class="segment historical" style="height: ${pb.hist * 6.5}%"></div>`;
+                if (globalView === 'all' || globalView === 'dmp') html += `<div class="segment dmp" style="height: ${pb.dmp * 6.5}%"></div>`;
+                if (globalView === 'all' || globalView === 'mkt') html += `<div class="segment market" style="height: ${pb.mkt * 6.5}%"></div>`;
+                html += `<div class="segment achieved" style="height: ${pb.ach * 6.5}%"><span class="seg-pct">${pb.ach}%</span></div>`;
+                html += `<div class="x-axis-label">${pb.name}</div>`;
+                group.innerHTML = html;
+                container.appendChild(group);
+            });
+        }
+
+        buildFilterList('pbFilterList', pricebooks, 'pb');
+        buildFilterList('supFilterList', suppliers, 'sup');
+        buildFilterList('catFilterList', categories, 'cat');
+
+        document.getElementById('itemSortSelect').onchange = updateUI;
+        document.getElementById('expandChartBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'block'; document.body.style.overflow = 'hidden'; };
+        document.getElementById('closeFullscreenBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; };
+
+        updateUI();
+    </script>
+</body>
+</html>
