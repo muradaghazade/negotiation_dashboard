@@ -79,6 +79,63 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
+        /* DMP Toggle Hover Popup */
+        .dmp-info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            background: var(--info-blue);
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+            font-style: italic;
+            font-weight: bold;
+            cursor: help;
+            position: relative;
+        }
+        
+        .dmp-popup {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--info-blue);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 1000;
+            top: 160%; /* Position under the icon */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.4;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+            pointer-events: none;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        
+        .dmp-popup::after {
+            content: "";
+            position: absolute;
+            bottom: 100%; /* Arrow pointing up */
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent transparent var(--info-blue) transparent;
+        }
+        
+        .dmp-info-icon:hover .dmp-popup {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .filter-trigger-btn {
             background: var(--text-dark);
             color: white;
@@ -172,39 +229,6 @@
             cursor: pointer;
         }
 
-        /* Tooltip style */
-        .info-tooltip {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 14px;
-            height: 14px;
-            background: var(--info-blue);
-            color: white;
-            border-radius: 50%;
-            font-size: 9px;
-            font-style: italic;
-            cursor: help;
-        }
-        .info-tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: #1e293b;
-            color: #fff;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 100;
-            top: 150%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 11px;
-        }
-        .info-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
-
         /* Dashboard Components */
         .main-negotiation-bridge { background-color: var(--card-bg); padding: 40px 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .bridge-column { flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; }
@@ -217,6 +241,7 @@
         .saved-pill { display: inline-block; background-color: var(--pill-bg); color: var(--success-green); font-weight: bold; font-size: 15px; padding: 6px 14px; border-radius: 9999px; margin-top: 15px; border: 1px solid var(--border-color); }
         .potential-indicator { margin-top: 15px; font-size: 14px; padding: 10px 18px; border-radius: 8px; border: 2px dashed var(--info-border); background-color: var(--info-bg); }
         .potential-highlight { color: var(--info-blue); font-size: 20px; font-weight: 800; margin-left: 5px; }
+        
         .spectrum-container { background-color: var(--card-bg); padding: 40px 40px 90px 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; border: 1px solid var(--border-color); }
         .spectrum-title { font-size: 15px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px; margin-bottom: 60px; }
         .spectrum-title::before { content: ''; display: block; width: 10px; height: 10px; background-color: var(--target-purple); border-radius: 2px; }
@@ -234,28 +259,47 @@
         .label-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
         .label-value { font-size: 14px; font-weight: 700; color: var(--text-dark); background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border-color); }
         .floating-gap-badge { position: absolute; top: -50px; left: 52.5%; transform: translateX(-50%); background-color: var(--target-purple); color: white; padding: 5px 15px; border-radius: 9999px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); z-index: 10; }
-        .chart-container { background-color: var(--card-bg); padding: 30px 40px 180px 70px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); position: relative; margin-bottom: 24px; }
+        
+        .chart-container { background-color: var(--card-bg); padding: 30px 40px 180px 95px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); position: relative; margin-bottom: 24px; }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .chart-header h3 { margin: 0; font-size: 18px; font-weight: 700; }
         .chart-legend { display: flex; gap: 15px; }
         .legend-item { display: flex; align-items: center; font-size: 12px; color: var(--text-muted); font-weight: 600; }
         .legend-color { width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; }
         .chart-body { position: relative; height: 420px; margin-top: 20px; }
-        .y-axis-label { position: absolute; left: -60px; top: 50%; transform: translateY(-50%) rotate(-90deg); font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        
+        .y-axis-label { position: absolute; left: -75px; top: 50%; transform: translateY(-50%) rotate(-90deg); font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
         .x-axis-title { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-        .y-axis { position: absolute; left: -5px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; color: var(--text-muted); font-size: 12px; }
-        .chart-grid { position: absolute; left: 35px; right: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; }
+        .y-axis { position: absolute; left: -55px; width: 45px; text-align: right; height: 100%; display: flex; flex-direction: column; justify-content: space-between; color: var(--text-muted); font-size: 12px; }
+        .chart-grid { position: absolute; left: 0px; right: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; }
+        
         .grid-line { width: 100%; border-top: 1px dashed #cbd5e1; }
-        .bars-area { display: flex; justify-content: space-around; align-items: flex-end; height: 100%; padding-left: 35px; z-index: 2; position: relative; }
+        .bars-area { display: flex; justify-content: space-around; align-items: flex-end; height: 100%; padding-left: 0px; z-index: 2; position: relative; }
         .bar-group { width: 12%; height: 100%; position: relative; display: flex; flex-direction: column; justify-content: flex-end; }
-        .segment { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-top: 1px solid #ffffff; overflow: hidden; text-align: center; line-height: 1.2; }
-        .seg-pct { font-size: 11px; font-weight: 800; }
-        .seg-price { font-size: 9px; font-weight: 600; opacity: 0.9; }
+        
+        /* DMP TARGET LINE STYLES */
+        .dmp-target-line {
+            position: absolute;
+            width: 130%;
+            left: -15%;
+            border-top: 2px dashed var(--dmp-text);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* UPDATED SEGMENT: overflow is now visible so small segments show text */
+        .segment { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-top: 1px solid #ffffff; position: relative; overflow: visible; z-index: 5; text-align: center; line-height: 1.2; }
+        .seg-pct { font-size: 11px; font-weight: 800; text-shadow: 0 0 3px rgba(255, 255, 255, 0.7); }
+        .seg-price { font-size: 9px; font-weight: 600; opacity: 0.9; text-shadow: 0 0 3px rgba(255, 255, 255, 0.7); }
+        
         .segment.achieved { background-color: var(--chart-achieved); color: white; border-top: none; border-radius: 0 0 4px 4px; }
+        .segment.achieved .seg-pct, .segment.achieved .seg-price { text-shadow: 0 0 3px rgba(0, 0, 0, 0.4); } /* Dark shadow for achieved (white text) */
+        
         .segment.market { background-color: var(--market-light); color: var(--market-text); }
         .segment.dmp { background-color: var(--dmp-light); color: var(--dmp-text); }
         .segment.historical { background-color: var(--hist-light); color: var(--hist-text); border-radius: 4px 4px 0 0; }
         .x-axis-label { position: absolute; top: calc(100% + 15px); right: 50%; transform: rotate(-45deg); transform-origin: top right; font-size: 11px; font-weight: 600; color: #475569; white-space: nowrap; }
+        
         .coverage-container { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 40px; border: 1px solid var(--border-color); }
         .coverage-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
         .coverage-title-group h3 { margin: 0; font-size: 18px; font-weight: 700; }
@@ -272,6 +316,7 @@
         .dist-target { background-color: var(--success-green); width: 36%; }
         .dist-gap { background-color: var(--target-purple); width: 50%; }
         .dist-none { background-color: var(--neutral-gray); width: 14%; }
+        
         .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .status-card { padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; }
         .status-card.reached { background-color: var(--success-bg); border-color: #bbf7d0; }
@@ -285,19 +330,27 @@
         .status-metrics { display: flex; justify-content: space-between; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px; }
         .stat-group .val { font-size: 16px; font-weight: 700; color: var(--text-dark); display: block; }
         .stat-group .lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        
         .item-chart-container { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); margin-bottom: 40px; position: relative; }
         .hz-chart-body { display: flex; flex-direction: column; margin-top: 10px; }
-        .hz-row { display: flex; align-items: center; margin-bottom: 12px; height: 42px; }
+        
+        .hz-row { display: flex; align-items: center; margin-bottom: 24px; height: 42px; position: relative; }
         .hz-label { width: 220px; font-size: 11px; font-weight: 700; color: var(--text-dark); padding-right: 15px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .hz-bar-stack { flex-grow: 1; height: 100%; display: flex; background-color: var(--neutral-bg); border-radius: 4px; overflow: hidden; position: relative; }
-        .hz-segment { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #ffffff; transition: filter 0.2s, width 0.3s ease; overflow: hidden; min-width: 0; }
-        .hz-segment:hover { filter: brightness(1.05); cursor: pointer; }
-        .hz-seg-pct { font-size: 10px; font-weight: 800; line-height: 1; }
-        .hz-seg-price { font-size: 8.5px; font-weight: 600; opacity: 0.9; margin-top: 1px; }
+        
+        .hz-bar-stack { flex-grow: 1; height: 100%; position: relative; }
+        .hz-bar-inner { width: 100%; height: 100%; display: flex; background-color: var(--neutral-bg); border-radius: 4px; overflow: hidden; }
+        
+        /* UPDATED HZ-SEGMENT: overflow visible */
+        .hz-segment { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #ffffff; transition: filter 0.2s, width 0.3s ease; overflow: visible; position: relative; min-width: 0; z-index: 5; }
+        .hz-segment:hover { filter: brightness(1.05); cursor: pointer; z-index: 15; }
+        .hz-seg-pct { font-size: 10px; font-weight: 800; line-height: 1; text-shadow: 0 0 3px rgba(255, 255, 255, 0.7); }
+        .hz-seg-price { font-size: 8.5px; font-weight: 600; opacity: 0.9; margin-top: 1px; text-shadow: 0 0 3px rgba(255, 255, 255, 0.7); }
         .hz-segment.achieved { background-color: var(--chart-achieved); color: white; border-right: none; }
+        .hz-segment.achieved .hz-seg-pct, .hz-segment.achieved .hz-seg-price { text-shadow: 0 0 3px rgba(0, 0, 0, 0.4); }
+        
         .hz-segment.market { background-color: var(--market-light); color: var(--market-text); }
-        .hz-segment.dmp { background-color: var(--dmp-light); color: var(--dmp-text); }
         .hz-segment.historical { background-color: var(--hist-light); color: var(--hist-text); }
+        
         .sort-select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 600; color: var(--text-dark); background-color: #fff; cursor: pointer; outline: none; }
         .sort-select:focus { border-color: var(--info-blue); }
         .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 9999; overflow-y: auto; padding: 40px; box-sizing: border-box; }
@@ -362,7 +415,12 @@
                     <button class="toggle-btn active" onclick="setGlobalView('all')">All</button>
                     <button class="toggle-btn" onclick="setGlobalView('hist')">Historical</button>
                     <button class="toggle-btn" onclick="setGlobalView('mkt')">Market</button>
-                    <button class="toggle-btn" onclick="setGlobalView('dmp')">DMP Forecast</button>
+                    <button class="toggle-btn" onclick="setGlobalView('dmp')">
+                        DMP Forecast
+                        <span class="dmp-info-icon" onclick="event.stopPropagation();">i
+                            <span class="dmp-popup">DMP Forecast is calculated by historical PO data, market, and inflation using regression models.</span>
+                        </span>
+                    </button>
                 </div>
                 <button class="filter-trigger-btn" onclick="toggleDrawer(true)">
                     <span>Filters</span>
@@ -384,7 +442,7 @@
                 <div class="saved-pill">SAVED $1,383,500</div>
                 
                 <div class="potential-indicator">
-                    Potential further savings: <span class="potential-highlight" id="potentialSavingsLabel">~2.2% ($478,136)</span>
+                    Potential further savings: <span class="potential-highlight" id="potentialSavingsLabel">~4.4% ($949,961)</span>
                 </div>
             </div>
 
@@ -400,7 +458,7 @@
                 <div class="rail-base"></div>
                 <div class="rail-achieved"></div>
                 <div class="rail-gap" id="railGapVisual"></div>
-                <div class="floating-gap-badge" id="gapBadge">Gap to Target: $900K</div>
+                <div class="floating-gap-badge" id="gapBadge">Gap to Target: $950K</div>
 
                 <div class="rail-node" style="left: 10%;" id="node-hist">
                     <div class="node-dot"></div>
@@ -427,18 +485,18 @@
 
         <div class="chart-container">
             <div class="chart-header">
-                <h3>Discount Gap Analysis by Pricebook</h3>
+                <h3>Savings Value Gap Analysis by Pricebook</h3>
                 <div class="chart-legend" id="pbLegend">
                     <div class="legend-item"><div class="legend-color achieved" style="background: #52b788"></div>Achieved</div>
                     <div class="legend-item" id="leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
-                    <div class="legend-item" id="leg-dmp"><div class="legend-color dmp" style="background: #f3e8ff"></div>Left to DMP Forecast</div>
                     <div class="legend-item" id="leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
+                    <div class="legend-item" id="leg-dmp"><div style="width: 16px; border-top: 2px dashed var(--dmp-text); margin-right: 6px;"></div>DMP Forecast Target</div>
                 </div>
             </div>
 
             <div class="chart-body">
-                <div class="y-axis-label">Discount %</div>
-                <div class="y-axis"><span>15%</span><span>12%</span><span>9%</span><span>6%</span><span>3%</span><span>0%</span></div>
+                <div class="y-axis-label">Savings Value ($)</div>
+                <div class="y-axis"><span>$600k</span><span>$480k</span><span>$360k</span><span>$240k</span><span>$120k</span><span>$0</span></div>
                 <div class="chart-grid"><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div></div>
 
                 <div class="bars-area" id="pricebookBars"></div>
@@ -462,7 +520,7 @@
                         <span class="badge-label">Total Items</span>
                     </div>
                     <div class="badge-item">
-                        <span class="badge-value" id="pbCount">12</span>
+                        <span class="badge-value" id="pbCount">5</span>
                         <span class="badge-label">Pricebooks</span>
                     </div>
                 </div>
@@ -522,8 +580,8 @@
             <div class="chart-legend" style="margin-bottom:20px; justify-content:flex-end;">
                 <div class="legend-item"><div class="legend-color achieved" style="background: #52b788"></div>Achieved</div>
                 <div class="legend-item leg-seg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
-                <div class="legend-item leg-seg-dmp"><div class="legend-color dmp" style="background: #f3e8ff"></div>Left to DMP Forecast</div>
                 <div class="legend-item leg-seg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
+                <div class="legend-item leg-seg-dmp"><div style="width: 16px; border-top: 2px dashed var(--dmp-text); margin-right: 6px;"></div>DMP Forecast Target</div>
             </div>
 
             <div id="itemHzChartBody" class="hz-chart-body"></div>
@@ -533,9 +591,14 @@
     <div class="fullscreen-overlay" id="fullscreenOverlay">
         <div class="fullscreen-header">
             <div>
-                <h2 style="margin:0">Full Item Analysis (All 381 Items)</h2>
+                <h2 id="fsTitle" style="margin:0">Full Item Analysis (All 381 Items)</h2>
             </div>
-            <button class="btn-close" id="closeFullscreenBtn">Exit Full Screen</button>
+            <div style="display:flex; align-items:center;">
+                <select id="fsPbFilter" class="sort-select" style="margin-right: 15px;">
+                    <option value="all">All Pricebooks</option>
+                </select>
+                <button class="btn-close" id="closeFullscreenBtn">Exit Full Screen</button>
+            </div>
         </div>
         <div id="fullscreenChartBody" class="hz-chart-body"></div>
     </div>
@@ -545,7 +608,7 @@
         let demandBasis = 'hist';
         let filters = { pb: [], sup: [], cat: [] };
 
-        const pricebooks = ["Instruments", "Hydraulics", "Electronics", "Bearings", "Tools", "Safety"];
+        const pricebooks = ["Instruments", "Hydraulics", "Electronics", "Bearings", "Tools"];
         const suppliers = ["Vendor Alpha", "Global Parts", "Tech Systems", "Apex Ltd"];
         const categories = ["Core", "Support", "Critical", "Secondary"];
 
@@ -567,8 +630,20 @@
         const pricebookSummary = [
             { name: "PB-Instruments-2026", ach: 7.5, achPrice: "$290K", mkt: 1.5, dmp: 1.8, hist: 2.2 },
             { name: "PB-Hydraulics-2026", ach: 6.2, achPrice: "$210K", mkt: 1.4, dmp: 1.8, hist: 1.8 },
-            { name: "PB-Electronics-2026", ach: 5.5, achPrice: "$165K", mkt: 1.2, dmp: 1.5, hist: 1.5 }
+            { name: "PB-Electronics-2026", ach: 5.5, achPrice: "$165K", mkt: 1.2, dmp: 1.5, hist: 1.5 },
+            { name: "PB-Bearings-2026", ach: 4.8, achPrice: "$120K", mkt: 1.0, dmp: 1.2, hist: 1.5 },
+            { name: "PB-Tools-2026", ach: 8.1, achPrice: "$180K", mkt: 1.8, dmp: 2.1, hist: 2.5 }
         ];
+
+        // Populate Fullscreen Pricebook Filter
+        const fsPbFilter = document.getElementById('fsPbFilter');
+        pricebooks.forEach(pb => {
+            const opt = document.createElement('option');
+            opt.value = pb;
+            opt.innerText = pb;
+            fsPbFilter.appendChild(opt);
+        });
+        fsPbFilter.onchange = updateUI;
 
         function toggleDrawer(show) {
             document.getElementById('filterDrawer').classList.toggle('open', show);
@@ -619,7 +694,6 @@
                 (filters.cat.length === 0 || filters.cat.includes(i.cat))
             );
 
-            // Simulation of Demand calculation adjustment
             const demandMultiplier = demandBasis === 'dmp' ? 1.12 : 1.0; 
             
             const sorted = filtered.sort((a,b) => {
@@ -630,16 +704,32 @@
                 return (b.mkt + b.dmp + b.hist) - (a.mkt + a.dmp + a.hist);
             });
 
+            // Update local Fullscreen Overlay Filter
+            const fsSelectedPb = document.getElementById('fsPbFilter').value;
+            const fsSorted = sorted.filter(i => fsSelectedPb === 'all' || i.pb === fsSelectedPb);
+            
+            // Update Title
+            const fsTitle = document.getElementById('fsTitle');
+            if(fsSelectedPb === 'all') {
+                fsTitle.innerText = `Full Item Analysis (All ${fsSorted.length} Items)`;
+            } else {
+                fsTitle.innerText = `Full Item Analysis - ${fsSelectedPb} (${fsSorted.length} Items)`;
+            }
+
             renderRows('itemHzChartBody', sorted.slice(0, 10), demandMultiplier);
-            renderRows('fullscreenChartBody', sorted, demandMultiplier);
+            renderRows('fullscreenChartBody', fsSorted, demandMultiplier);
         }
 
         function updateBridgePotential() {
             const el = document.getElementById('potentialSavingsLabel');
-            if (globalView === 'all') el.innerHTML = `~2.2% ($478,136)`;
-            else if (globalView === 'mkt') el.innerHTML = `~1.3% ($280,400)`;
-            else if (globalView === 'dmp') el.innerHTML = `~1.8% ($390,200)`;
-            else if (globalView === 'hist') el.innerHTML = `~3.1% ($645,000)`;
+            
+            if (globalView === 'all' || globalView === 'dmp') {
+                el.innerHTML = `~4.4% ($949,961)`;
+            } else if (globalView === 'mkt') {
+                el.innerHTML = `~6.7% ($1,449,961)`;
+            } else if (globalView === 'hist') {
+                el.innerHTML = `~8.5% ($1,849,961)`;
+            }
         }
 
         function updateCoverageBadges() {
@@ -658,13 +748,13 @@
 
             if (globalView === 'all') {
                 nodes.dmp.classList.add('node-target');
-                gapBadge.innerText = "Gap to Target: $900K";
+                gapBadge.innerText = "Gap to Target: $950K";
                 visualGap.style.width = "25%"; visualGap.style.right = "35%";
             } else {
                 Object.keys(nodes).forEach(key => { if (key !== globalView) nodes[key].style.opacity = "0"; else nodes[key].classList.add('node-target'); });
-                if(globalView === 'hist') { gapBadge.innerText = "Gap to Hist: $1.8M"; visualGap.style.width = "55%"; visualGap.style.right = "35%"; }
-                if(globalView === 'mkt') { gapBadge.innerText = "Gap to Market: $1.4M"; visualGap.style.width = "40%"; visualGap.style.right = "35%"; }
-                if(globalView === 'dmp') { gapBadge.innerText = "Gap to DMP: $900K"; visualGap.style.width = "25%"; visualGap.style.right = "35%"; }
+                if(globalView === 'hist') { gapBadge.innerText = "Gap to Hist: $1.85M"; visualGap.style.width = "55%"; visualGap.style.right = "35%"; }
+                if(globalView === 'mkt') { gapBadge.innerText = "Gap to Market: $1.45M"; visualGap.style.width = "40%"; visualGap.style.right = "35%"; }
+                if(globalView === 'dmp') { gapBadge.innerText = "Gap to DMP: $950K"; visualGap.style.width = "25%"; visualGap.style.right = "35%"; }
             }
         }
 
@@ -676,10 +766,34 @@
                 const row = document.createElement('div');
                 row.className = 'hz-row';
                 let html = `<div class="hz-label">${item.name}<br><small style="color:var(--text-muted)">${item.sup}</small></div><div class="hz-bar-stack">`;
+                
+                // Add an inner container so the segments still have border radius but the wrapper can overflow visible labels
+                html += `<div class="hz-bar-inner">`
+                
+                // Segment calculations
                 html += `<div class="hz-segment achieved" style="width: ${(item.ach/MAX_SCALE)*100}%"><span class="hz-seg-pct">${item.ach}%</span></div>`;
                 if (globalView === 'all' || globalView === 'mkt') html += `<div class="hz-segment market" style="width: ${(item.mkt*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.mkt*mult).toFixed(1)}%</span></div>`;
-                if (globalView === 'all' || globalView === 'dmp') html += `<div class="hz-segment dmp" style="width: ${(item.dmp*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.dmp*mult).toFixed(1)}%</span></div>`;
                 if (globalView === 'all' || globalView === 'hist') html += `<div class="hz-segment historical" style="width: ${(item.hist*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.hist*mult).toFixed(1)}%</span></div>`;
+                
+                html += `</div>`; // Close inner container
+                
+                // Add DMP Target line inside the outer container (which has overflow:visible) with label floating below
+                if (globalView === 'all' || globalView === 'dmp') {
+                    const targetPct = item.ach + item.dmp*mult;
+                    const targetLeftPos = (targetPct / MAX_SCALE) * 100;
+                    
+                    // Calculate value representing the specific DMP mark
+                    const baseItemVal = parseFloat(item.achPrice.replace(/[^0-9.]/g, ''));
+                    const targetItemVal = Math.round(baseItemVal * (targetPct / item.ach));
+
+                    html += `
+                        <div style="position:absolute; left: ${targetLeftPos}%; top: -4px; bottom: -4px; border-left: 2px dashed var(--dmp-text); z-index:10; pointer-events: none;">
+                            <div style="position: absolute; left: 50%; transform: translateX(-50%); top: 100%; margin-top: 4px; font-size: 8.5px; font-weight: 800; color: var(--dmp-text); background: rgba(243, 232, 255, 0.95); padding: 2px 4px; border-radius: 3px; border: 1px solid var(--dmp-text); white-space: nowrap;">
+                                ${targetPct.toFixed(1)}% | $${targetItemVal}K
+                            </div>
+                        </div>`;
+                }
+
                 html += `</div>`;
                 row.innerHTML = html;
                 container.appendChild(row);
@@ -689,18 +803,64 @@
         function renderPricebookChart() {
             const container = document.getElementById('pricebookBars');
             container.innerHTML = '';
+            
             document.getElementById('leg-mkt').style.display = (globalView === 'all' || globalView === 'mkt') ? 'flex' : 'none';
-            document.getElementById('leg-dmp').style.display = (globalView === 'all' || globalView === 'dmp') ? 'flex' : 'none';
             document.getElementById('leg-hist').style.display = (globalView === 'all' || globalView === 'hist') ? 'flex' : 'none';
+            
+            const MAX_Y_VAL = 600; // Represents $600k maximum Y axis limit
+
             pricebookSummary.forEach(pb => {
                 const group = document.createElement('div');
                 group.className = 'bar-group';
                 let html = ``;
-                if (globalView === 'all' || globalView === 'hist') html += `<div class="segment historical" style="height: ${pb.hist * 6.5}%"></div>`;
-                if (globalView === 'all' || globalView === 'dmp') html += `<div class="segment dmp" style="height: ${pb.dmp * 6.5}%"></div>`;
-                if (globalView === 'all' || globalView === 'mkt') html += `<div class="segment market" style="height: ${pb.mkt * 6.5}%"></div>`;
-                html += `<div class="segment achieved" style="height: ${pb.ach * 6.5}%"><span class="seg-pct">${pb.ach}%</span></div>`;
+
+                // Calculate proportionate monetary value based on the base 'achPrice'
+                const baseVal = parseFloat(pb.achPrice.replace(/[^0-9.]/g, ''));
+                const getValNum = (pct) => Math.round(baseVal * (pct / pb.ach));
+                const getValStr = (pct) => `$${getValNum(pct)}K`;
+
+                const histVal = getValNum(pb.hist);
+                const dmpVal = getValNum(pb.dmp);
+                const mktVal = getValNum(pb.mkt);
+                const achVal = baseVal;
+
+                if (globalView === 'all' || globalView === 'hist') {
+                    html += `
+                        <div class="segment historical" style="height: ${(histVal / MAX_Y_VAL) * 100}%">
+                            <span class="seg-pct">+${pb.hist}%</span>
+                            <span class="seg-price">${getValStr(pb.hist)}</span>
+                        </div>`;
+                }
+                
+                if (globalView === 'all' || globalView === 'mkt') {
+                    html += `
+                        <div class="segment market" style="height: ${(mktVal / MAX_Y_VAL) * 100}%">
+                            <span class="seg-pct">+${pb.mkt}%</span>
+                            <span class="seg-price">${getValStr(pb.mkt)}</span>
+                        </div>`;
+                }
+                html += `
+                    <div class="segment achieved" style="height: ${(achVal / MAX_Y_VAL) * 100}%">
+                        <span class="seg-pct">${pb.ach}%</span>
+                        <span class="seg-price">${pb.achPrice}</span>
+                    </div>`;
                 html += `<div class="x-axis-label">${pb.name}</div>`;
+                
+                // Add the absolute line mapping the position of the DMP target with the label to the right side
+                if (globalView === 'all' || globalView === 'dmp') {
+                    const dmpTargetPercent = ((achVal + dmpVal) / MAX_Y_VAL) * 100;
+                    
+                    const targetPctStr = (pb.ach + pb.dmp).toFixed(1) + '%';
+                    const targetValStr = '$' + (achVal + dmpVal) + 'K';
+
+                    html += `
+                        <div class="dmp-target-line" style="bottom: ${dmpTargetPercent}%;">
+                            <div style="position: absolute; left: 100%; margin-left: 4px; top: -8px; font-size: 9px; font-weight: 800; color: var(--dmp-text); background: var(--dmp-light); padding: 2px 4px; border-radius: 4px; border: 1px dashed var(--dmp-text); white-space: nowrap;">
+                                ${targetPctStr} | ${targetValStr}
+                            </div>
+                        </div>`;
+                }
+
                 group.innerHTML = html;
                 container.appendChild(group);
             });
