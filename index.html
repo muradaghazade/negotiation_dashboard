@@ -14,7 +14,7 @@
 
             --success-green: #10b981; 
             --success-bg: #f0fdf4;
-            --danger-red: #ef4444; /* Added Red for Cost Increase */
+            --danger-red: #ef4444; 
             --info-blue: #0ea5e9; 
             --info-bg: #f0f9ff;
             --info-border: #7dd3fc; 
@@ -309,7 +309,6 @@
         .label-value { font-size: 14px; font-weight: 700; color: var(--text-dark); background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border-color); }
         .floating-gap-badge { position: absolute; top: -50px; left: 52.5%; transform: translateX(-50%); background-color: var(--target-purple); color: white; padding: 5px 15px; border-radius: 9999px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); z-index: 10; }
         
-        /* Adjusted padding bottom to fit the Cost Increase downward bar */
         .chart-container { background-color: var(--card-bg); padding: 30px 40px 220px 95px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); position: relative; margin-bottom: 24px; }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .chart-header h3 { margin: 0; font-size: 18px; font-weight: 700; }
@@ -790,10 +789,11 @@
 
         const itemsData = [];
         for (let i = 1; i <= 381; i++) {
-            const pb = pricebooks[Math.floor(Math.random() * pricebooks.length)];
-            const sup = suppliers[Math.floor(Math.random() * suppliers.length)];
-            const cat = categories[Math.floor(Math.random() * categories.length)];
-            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            const itemName = `Item-SKU-${1000 + i}`;
+            let pb = pricebooks[Math.floor(Math.random() * pricebooks.length)];
+            let sup = suppliers[Math.floor(Math.random() * suppliers.length)];
+            let cat = categories[Math.floor(Math.random() * categories.length)];
+            let status = statuses[Math.floor(Math.random() * statuses.length)];
             
             let ach = parseFloat((Math.random() * 8 + 12).toFixed(1));
             let mkt = parseFloat((Math.random() * 4 + 4).toFixed(1));
@@ -811,7 +811,6 @@
 
             let valuePerPercent = Math.random() * 5 + 5; 
 
-            // Logic to introduce a cost increase scenario exclusively to Bearings that need more work
             let hasIncrease = false;
             let inc = 0;
             if (pb === "Bearings" && status === "more" && Math.random() > 0.4) {
@@ -819,8 +818,19 @@
                 inc = parseFloat((Math.random() * 2 + 1).toFixed(1)); 
             }
 
+            if (itemName === 'Item-SKU-1063') {
+                pb = "Bearings";
+                status = "more";
+                hasIncrease = true;
+                inc = 8.3;
+                ach = 4.5; 
+                mkt = 15.0; 
+                hist = 12.0; 
+                dmp = 10.0;
+            }
+
             itemsData.push({
-                name: `Item-SKU-${1000 + i}`, pb, sup, cat, status,
+                name: itemName, pb, sup, cat, status,
                 ach: ach,
                 hasIncrease: hasIncrease,
                 inc: inc,
@@ -832,7 +842,6 @@
             });
         }
 
-        // Apply a specific cost increase metric to the Bearings pricebook
         const pricebookSummary = [
             { name: "PB-Instruments-2026", ach: 7.5, achPrice: "$290K", mkt: 1.5, dmp: 1.8, hist: 2.2 },
             { name: "PB-Hydraulics-2026", ach: 6.2, achPrice: "$210K", mkt: 1.4, dmp: 1.8, hist: 1.8 },
@@ -1015,9 +1024,7 @@
             legends.forEach(leg => {
                 if(!leg) return;
                 
-                // Show cost increase legend item if split saving is on
                 leg.querySelector('.leg-inc').style.display = splitSaving ? 'flex' : 'none';
-
                 leg.querySelector('.leg-save').style.display = splitSaving ? 'flex' : 'none';
                 leg.querySelector('.leg-avoid').style.display = splitSaving ? 'flex' : 'none';
                 leg.querySelector('.leg-achieved').style.display = splitSaving ? 'none' : 'flex';
@@ -1081,7 +1088,6 @@
                                 </div>`;
                         }
                     } else {
-                        // Standard view without split
                         const achW = (item.ach / MAX_SCALE) * 100;
                         totalVal = Math.round(item.ach * item.valuePerPercent);
                         html += `
@@ -1112,37 +1118,30 @@
 
                 html += `</div>`; // close hz-bar-stack
 
-                html += `
-                    <div style="min-width: 115px; padding-left: 15px; margin-left: 15px; border-left: 1px solid var(--border-color); font-size: 10px; font-weight: 600; line-height: 1.4; color: var(--text-muted); display: flex; flex-direction: column; justify-content: center; height: 100%;">
-                        <div style="color: var(--text-dark); font-weight: 800; font-size: 11px; margin-bottom: 2px;">
-                            Total Achieved: ${item.ach > 0 ? item.ach.toFixed(1) + '%' : '0%'} ($${totalVal}K)
-                        </div>`;
+                let badgeHtml = `
+                    <div style="min-width: 130px; margin-left: 15px; background: white; color: var(--text-dark); font-size: 10px; font-weight: 800; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center; line-height: 1.3;">
+                        <span style="color: var(--text-muted); font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.5px;">Total Achieved</span><br>
+                        <span style="color: var(--success-green); font-size: 12px;">${item.ach > 0 ? item.ach.toFixed(1) + '%' : '0%'}</span> | $${totalVal}K`;
                         
                 if(splitSaving && item.ach > 0) {
                     if (item.hasIncrease) {
-                        html += `
-                            <div style="display: flex; align-items: center; gap: 5px; color: #10b981;">
-                                <div style="width: 8px; height: 8px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 2px;"></div>
-                                Avoid: $${avoidVal}K
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 5px; color: var(--danger-red);">
-                                <div style="width: 8px; height: 8px; background: var(--danger-red); border-radius: 2px;"></div>
-                                Inc: $${incVal}K
+                        badgeHtml += `
+                            <div style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed var(--border-color); display: flex; justify-content: center; gap: 8px; font-size: 8.5px;">
+                                <span style="color: #10b981; display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 1px;"></div>$${avoidVal}K</span>
+                                <span style="color: var(--danger-red); display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: var(--danger-red); border-radius: 1px;"></div>$${incVal}K</span>
                             </div>`;
                     } else {
-                        html += `
-                            <div style="display: flex; align-items: center; gap: 5px; color: var(--success-green);">
-                                <div style="width: 8px; height: 8px; background: var(--success-green); border-radius: 2px;"></div>
-                                Saving: $${savingVal}K
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 5px; color: #10b981;">
-                                <div style="width: 8px; height: 8px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 2px;"></div>
-                                Avoidance: $${avoidVal}K
+                        badgeHtml += `
+                            <div style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed var(--border-color); display: flex; justify-content: center; gap: 8px; font-size: 8.5px;">
+                                <span style="color: var(--success-green); display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: var(--success-green); border-radius: 1px;"></div>$${savingVal}K</span>
+                                <span style="color: #10b981; display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 1px;"></div>$${avoidVal}K</span>
                             </div>`;
                     }
                 }
 
-                html += `</div>`;
+                badgeHtml += `</div>`;
+                html += badgeHtml;
+
                 row.innerHTML = html;
                 container.appendChild(row);
             });
@@ -1242,6 +1241,26 @@
             svg += `<path d="${areaPath}" fill="url(#trendGradient)" />`;
             svg += `<path d="M ${pathPoints}" fill="none" stroke="var(--info-blue)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
 
+            // Draw the Cost Avoidance Limit line 
+            const totalSaved = originalPrice - currentPrice;
+            let avoidLimitY = null;
+
+            if (totalSaved > 0) {
+                if (hasIncrease) {
+                    avoidLimitY = scaleY(currentPrice); // Limit is placed right before the increase bar (Current Price)
+                } else {
+                    avoidLimitY = scaleY(originalPrice - (totalSaved * 0.4));
+                }
+            }
+
+            if (avoidLimitY) {
+                svg += `<line x1="${padL}" y1="${avoidLimitY}" x2="${w - padR + 25}" y2="${avoidLimitY}" stroke="#10b981" stroke-dasharray="6,4" stroke-width="2" opacity="0.9"/>`;
+                
+                // Highly visible pill for the label
+                svg += `<rect x="${padL + 15}" y="${avoidLimitY - 12}" width="130" height="24" fill="#10b981" rx="12"/>`;
+                svg += `<text x="${padL + 80}" y="${avoidLimitY + 4}" font-size="10" font-weight="800" fill="#ffffff" text-anchor="middle">Cost Avoidance Limit</text>`;
+            }
+
             timeline.forEach((pt, i) => {
                 const x = scaleX(i);
                 const y = scaleY(pt.price);
@@ -1259,7 +1278,6 @@
             // Stacked Bar for Saving & Avoidance (and Increase)
             const origY = scaleY(originalPrice);
             const currY = scaleY(currentPrice);
-            const totalSaved = originalPrice - currentPrice;
 
             if (totalSaved > 0) {
                 svg += `<line x1="${scaleX(0)}" y1="${origY}" x2="${w - padR + 25}" y2="${origY}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.5" opacity="0.5"/>`;
@@ -1267,13 +1285,27 @@
 
                 if (hasIncrease) {
                     const avoidVal = totalSaved;
-                    const histY = scaleY(histPrice); // histPrice is lower, so Y is higher on screen
+                    const histY = scaleY(histPrice); 
                     
                     svg += `<rect x="${w - padR + 25}" y="${origY}" width="16" height="${currY - origY}" fill="url(#avoidanceStripe)" stroke="#fff" stroke-width="1"/>`;
                     svg += `<rect x="${w - padR + 25}" y="${currY}" width="16" height="${histY - currY}" fill="var(--danger-red)" stroke="#fff" stroke-width="1"/>`;
 
-                    svg += `<text x="${w - padR + 45}" y="${origY + (currY - origY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Avoid $${Math.round(avoidVal)}K</text>`;
-                    svg += `<text x="${w - padR + 45}" y="${currY + (histY - currY)/2 + 3}" font-size="9" font-weight="800" fill="var(--danger-red)">Inc $${Math.round(incVal)}K</text>`;
+                    let avoidMidY = origY + (currY - origY) / 2;
+                    let incMidY = currY + (histY - currY) / 2;
+
+                    if (incMidY - avoidMidY < 24) {
+                        avoidMidY -= 12;
+                        incMidY += 12;
+                    }
+
+                    svg += `<line x1="${w - padR + 41}" y1="${origY + (currY - origY) / 2}" x2="${w - padR + 48}" y2="${avoidMidY}" stroke="#10b981" stroke-width="1"/>`;
+                    svg += `<line x1="${w - padR + 41}" y1="${currY + (histY - currY) / 2}" x2="${w - padR + 48}" y2="${incMidY}" stroke="#ef4444" stroke-width="1"/>`;
+
+                    svg += `<rect x="${w - padR + 48}" y="${avoidMidY - 12}" width="75" height="24" fill="#f0fdf4" stroke="#10b981" stroke-width="1" rx="4"/>`;
+                    svg += `<text x="${w - padR + 85.5}" y="${avoidMidY + 4}" font-size="10" font-weight="800" fill="#059669" text-anchor="middle">Avoid $${Math.round(avoidVal)}K</text>`;
+
+                    svg += `<rect x="${w - padR + 48}" y="${incMidY - 12}" width="75" height="24" fill="#fef2f2" stroke="#ef4444" stroke-width="1" rx="4"/>`;
+                    svg += `<text x="${w - padR + 85.5}" y="${incMidY + 4}" font-size="10" font-weight="800" fill="#dc2626" text-anchor="middle">Inc $${Math.round(incVal)}K</text>`;
 
                     svg += `<text x="${w - padR + 33}" y="${origY - 8}" font-size="9" font-weight="800" fill="var(--text-muted)" text-anchor="middle" letter-spacing="0.5">ACHIEVED</text>`;
                 } else {
@@ -1285,8 +1317,22 @@
                     svg += `<rect x="${w - padR + 25}" y="${origY}" width="16" height="${midY - origY}" fill="url(#avoidanceStripe)" stroke="#fff" stroke-width="1"/>`;
                     svg += `<rect x="${w - padR + 25}" y="${midY}" width="16" height="${currY - midY}" fill="var(--success-green)" stroke="#fff" stroke-width="1"/>`;
 
-                    svg += `<text x="${w - padR + 45}" y="${origY + (midY - origY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Avoid $${Math.round(avoidVal)}K</text>`;
-                    svg += `<text x="${w - padR + 45}" y="${midY + (currY - midY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Save $${Math.round(saveVal)}K</text>`;
+                    let avoidMidY = origY + (midY - origY) / 2;
+                    let saveMidY = midY + (currY - midY) / 2;
+
+                    if (saveMidY - avoidMidY < 24) {
+                        avoidMidY -= 12;
+                        saveMidY += 12;
+                    }
+
+                    svg += `<line x1="${w - padR + 41}" y1="${origY + (midY - origY) / 2}" x2="${w - padR + 48}" y2="${avoidMidY}" stroke="#10b981" stroke-width="1"/>`;
+                    svg += `<line x1="${w - padR + 41}" y1="${midY + (currY - midY) / 2}" x2="${w - padR + 48}" y2="${saveMidY}" stroke="#10b981" stroke-width="1"/>`;
+
+                    svg += `<rect x="${w - padR + 48}" y="${avoidMidY - 12}" width="75" height="24" fill="#f0fdf4" stroke="#10b981" stroke-width="1" rx="4"/>`;
+                    svg += `<text x="${w - padR + 85.5}" y="${avoidMidY + 4}" font-size="10" font-weight="800" fill="#059669" text-anchor="middle">Avoid $${Math.round(avoidVal)}K</text>`;
+
+                    svg += `<rect x="${w - padR + 48}" y="${saveMidY - 12}" width="75" height="24" fill="#f0fdf4" stroke="#10b981" stroke-width="1" rx="4"/>`;
+                    svg += `<text x="${w - padR + 85.5}" y="${saveMidY + 4}" font-size="10" font-weight="800" fill="#059669" text-anchor="middle">Save $${Math.round(saveVal)}K</text>`;
 
                     svg += `<text x="${w - padR + 33}" y="${origY - 8}" font-size="9" font-weight="800" fill="var(--text-muted)" text-anchor="middle" letter-spacing="0.5">ACHIEVED</text>`;
                 }
