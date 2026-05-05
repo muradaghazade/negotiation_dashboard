@@ -14,7 +14,6 @@
 
             --success-green: #10b981; 
             --success-bg: #f0fdf4;
-            --danger-red: #ef4444; /* Added Red for Cost Increase */
             --info-blue: #0ea5e9; 
             --info-bg: #f0f9ff;
             --info-border: #7dd3fc; 
@@ -309,8 +308,7 @@
         .label-value { font-size: 14px; font-weight: 700; color: var(--text-dark); background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border-color); }
         .floating-gap-badge { position: absolute; top: -50px; left: 52.5%; transform: translateX(-50%); background-color: var(--target-purple); color: white; padding: 5px 15px; border-radius: 9999px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); z-index: 10; }
         
-        /* Adjusted padding bottom to fit the Cost Increase downward bar */
-        .chart-container { background-color: var(--card-bg); padding: 30px 40px 220px 95px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); position: relative; margin-bottom: 24px; }
+        .chart-container { background-color: var(--card-bg); padding: 30px 40px 180px 95px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); position: relative; margin-bottom: 24px; }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .chart-header h3 { margin: 0; font-size: 18px; font-weight: 700; }
         .chart-legend { display: flex; gap: 15px; margin-top: 10px;}
@@ -355,7 +353,7 @@
         .segment.market { background-color: var(--market-light); color: var(--market-text); }
         .segment.dmp { background-color: var(--dmp-light); color: var(--dmp-text); }
         .segment.historical { background-color: var(--hist-light); color: var(--hist-text); border-radius: 4px 4px 0 0; }
-        .x-axis-label { position: absolute; top: calc(100% + 55px); right: 50%; transform: rotate(-45deg); transform-origin: top right; font-size: 11px; font-weight: 600; color: #475569; white-space: nowrap; }
+        .x-axis-label { position: absolute; top: calc(100% + 15px); right: 50%; transform: rotate(-45deg); transform-origin: top right; font-size: 11px; font-weight: 600; color: #475569; white-space: nowrap; }
         
         .coverage-container { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 40px; border: 1px solid var(--border-color); }
         .coverage-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
@@ -611,7 +609,6 @@
                 <div class="chart-legend" id="pbLegend">
                     <div class="legend-item" id="leg-save"><div class="legend-color" style="background: var(--success-green);"></div>Cost Saving</div>
                     <div class="legend-item" id="leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
-                    <div class="legend-item" id="leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
                     <div class="legend-item" id="leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
                     <div class="legend-item" id="leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
                     <div class="legend-item" id="leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
@@ -724,7 +721,6 @@
             <div class="chart-legend" id="mainItemLegend" style="margin-bottom:20px; justify-content:flex-end;">
                 <div class="legend-item leg-save"><div class="legend-color" style="background: var(--success-green);"></div>Cost Saving</div>
                 <div class="legend-item leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
-                <div class="legend-item leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
                 <div class="legend-item leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
                 <div class="legend-item leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
                 <div class="legend-item leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
@@ -759,7 +755,6 @@
                 <div class="chart-legend" id="fsItemLegend" style="margin-bottom:0;">
                     <div class="legend-item leg-save"><div class="legend-color" style="background: var(--success-green);"></div>Cost Saving</div>
                     <div class="legend-item leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
-                    <div class="legend-item leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
                     <div class="legend-item leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
                     <div class="legend-item leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
                     <div class="legend-item leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
@@ -811,19 +806,9 @@
 
             let valuePerPercent = Math.random() * 5 + 5; 
 
-            // Logic to introduce a cost increase scenario exclusively to Bearings that need more work
-            let hasIncrease = false;
-            let inc = 0;
-            if (pb === "Bearings" && status === "more" && Math.random() > 0.4) {
-                hasIncrease = true;
-                inc = parseFloat((Math.random() * 2 + 1).toFixed(1)); 
-            }
-
             itemsData.push({
                 name: `Item-SKU-${1000 + i}`, pb, sup, cat, status,
                 ach: ach,
-                hasIncrease: hasIncrease,
-                inc: inc,
                 achPrice: `$${Math.round(ach * valuePerPercent)}k`,
                 mkt: mkt,
                 dmp: dmp,
@@ -832,12 +817,11 @@
             });
         }
 
-        // Apply a specific cost increase metric to the Bearings pricebook
         const pricebookSummary = [
             { name: "PB-Instruments-2026", ach: 7.5, achPrice: "$290K", mkt: 1.5, dmp: 1.8, hist: 2.2 },
             { name: "PB-Hydraulics-2026", ach: 6.2, achPrice: "$210K", mkt: 1.4, dmp: 1.8, hist: 1.8 },
             { name: "PB-Electronics-2026", ach: 5.5, achPrice: "$165K", mkt: 1.2, dmp: 1.5, hist: 1.5 },
-            { name: "PB-Bearings-2026", ach: 4.8, achPrice: "$120K", mkt: 1.0, dmp: 1.2, hist: 1.5, hasIncrease: true, inc: 2.4 },
+            { name: "PB-Bearings-2026", ach: 4.8, achPrice: "$120K", mkt: 1.0, dmp: 1.2, hist: 1.5 },
             { name: "PB-Tools-2026", ach: 8.1, achPrice: "$180K", mkt: 1.8, dmp: 2.1, hist: 2.5 }
         ];
 
@@ -1014,10 +998,6 @@
             const legends = [document.getElementById('mainItemLegend'), document.getElementById('fsItemLegend')];
             legends.forEach(leg => {
                 if(!leg) return;
-                
-                // Show cost increase legend item if split saving is on
-                leg.querySelector('.leg-inc').style.display = splitSaving ? 'flex' : 'none';
-
                 leg.querySelector('.leg-save').style.display = splitSaving ? 'flex' : 'none';
                 leg.querySelector('.leg-avoid').style.display = splitSaving ? 'flex' : 'none';
                 leg.querySelector('.leg-achieved').style.display = splitSaving ? 'none' : 'flex';
@@ -1038,52 +1018,32 @@
                 html += `<div class="hz-bar-stack" onclick="openItemTrendModal('${item.name}')">`;
                 html += `<div class="hz-bar-inner">`
                 
-                let avoidVal = 0, savingVal = 0, totalVal = 0, incVal = 0;
+                let avoidVal = 0, savingVal = 0, totalVal = 0;
                 
                 if(item.ach > 0) {
+                    const avoidW = (item.ach * 0.4 / MAX_SCALE) * 100;
+                    const savingW = (item.ach * 0.6 / MAX_SCALE) * 100;
+                    const achW = (item.ach / MAX_SCALE) * 100;
+                    
+                    const avoidPct = (item.ach * 0.4).toFixed(1);
+                    const savingPct = (item.ach * 0.6).toFixed(1);
+                    
+                    avoidVal = Math.round(item.ach * 0.4 * item.valuePerPercent);
+                    savingVal = Math.round(item.ach * 0.6 * item.valuePerPercent);
+                    totalVal = Math.round(item.ach * item.valuePerPercent);
+                    
                     if (splitSaving) {
-                        if (item.hasIncrease) {
-                            const avoidW = (item.ach / MAX_SCALE) * 100;
-                            const incW = (item.inc / MAX_SCALE) * 100;
-                            avoidVal = Math.round(item.ach * item.valuePerPercent);
-                            incVal = Math.round(item.inc * item.valuePerPercent);
-                            totalVal = avoidVal; // Total achieved reduction from new offer is just avoidance
-                            
-                            html += `
-                                <div class="hz-segment achieved-avoidance" style="width: ${avoidW}%">
-                                    <span class="hz-seg-pct">${item.ach.toFixed(1)}%</span>
-                                    <span class="hz-seg-price">$${avoidVal}K</span>
-                                </div>
-                                <div class="hz-segment cost-increase" style="width: ${incW}%; background-color: var(--danger-red); color: white;">
-                                    <span class="hz-seg-pct">+${item.inc.toFixed(1)}%</span>
-                                    <span class="hz-seg-price">$${incVal}K</span>
-                                </div>`;
-                        } else {
-                            const avoidW = (item.ach * 0.4 / MAX_SCALE) * 100;
-                            const savingW = (item.ach * 0.6 / MAX_SCALE) * 100;
-                            
-                            const avoidPct = (item.ach * 0.4).toFixed(1);
-                            const savingPct = (item.ach * 0.6).toFixed(1);
-                            
-                            avoidVal = Math.round(item.ach * 0.4 * item.valuePerPercent);
-                            savingVal = Math.round(item.ach * 0.6 * item.valuePerPercent);
-                            totalVal = avoidVal + savingVal;
-                            
-                            html += `
-                                <div class="hz-segment achieved-avoidance" style="width: ${avoidW}%">
-                                    <span class="hz-seg-pct">${avoidPct}%</span>
-                                    <span class="hz-seg-price">$${avoidVal}K</span>
-                                </div>`;
-                            html += `
-                                <div class="hz-segment achieved-saving" style="width: ${savingW}%">
-                                    <span class="hz-seg-pct">${savingPct}%</span>
-                                    <span class="hz-seg-price">$${savingVal}K</span>
-                                </div>`;
-                        }
+                        html += `
+                            <div class="hz-segment achieved-avoidance" style="width: ${avoidW}%">
+                                <span class="hz-seg-pct">${avoidPct}%</span>
+                                <span class="hz-seg-price">$${avoidVal}K</span>
+                            </div>`;
+                        html += `
+                            <div class="hz-segment achieved-saving" style="width: ${savingW}%">
+                                <span class="hz-seg-pct">${savingPct}%</span>
+                                <span class="hz-seg-price">$${savingVal}K</span>
+                            </div>`;
                     } else {
-                        // Standard view without split
-                        const achW = (item.ach / MAX_SCALE) * 100;
-                        totalVal = Math.round(item.ach * item.valuePerPercent);
                         html += `
                             <div class="hz-segment achieved-saving" style="width: ${achW}%">
                                 <span class="hz-seg-pct">${item.ach.toFixed(1)}%</span>
@@ -1119,27 +1079,15 @@
                         </div>`;
                         
                 if(splitSaving && item.ach > 0) {
-                    if (item.hasIncrease) {
-                        html += `
-                            <div style="display: flex; align-items: center; gap: 5px; color: #10b981;">
-                                <div style="width: 8px; height: 8px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 2px;"></div>
-                                Avoid: $${avoidVal}K
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 5px; color: var(--danger-red);">
-                                <div style="width: 8px; height: 8px; background: var(--danger-red); border-radius: 2px;"></div>
-                                Inc: $${incVal}K
-                            </div>`;
-                    } else {
-                        html += `
-                            <div style="display: flex; align-items: center; gap: 5px; color: var(--success-green);">
-                                <div style="width: 8px; height: 8px; background: var(--success-green); border-radius: 2px;"></div>
-                                Saving: $${savingVal}K
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 5px; color: #10b981;">
-                                <div style="width: 8px; height: 8px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 2px;"></div>
-                                Avoidance: $${avoidVal}K
-                            </div>`;
-                    }
+                    html += `
+                        <div style="display: flex; align-items: center; gap: 5px; color: var(--success-green);">
+                            <div style="width: 8px; height: 8px; background: var(--success-green); border-radius: 2px;"></div>
+                            Saving: $${savingVal}K
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px; color: #10b981;">
+                            <div style="width: 8px; height: 8px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 2px;"></div>
+                            Avoidance: $${avoidVal}K
+                        </div>`;
                 }
 
                 html += `</div>`;
@@ -1148,7 +1096,7 @@
             });
         }
 
-        function renderTrendSVG(title, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, achPctReal, hasIncrease = false, incVal = 0) {
+        function renderTrendSVG(title, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, achPctReal) {
             let round1 = originalPrice * (1 - achPctReal * 0.4);
             let round2 = originalPrice * (1 - achPctReal * 0.75);
             
@@ -1256,7 +1204,9 @@
                 `;
             });
 
-            // Stacked Bar for Saving & Avoidance (and Increase)
+            // ==========================================
+            // NEW: Stacked Saving & Avoidance Vertical Bar
+            // ==========================================
             const origY = scaleY(originalPrice);
             const currY = scaleY(currentPrice);
             const totalSaved = originalPrice - currentPrice;
@@ -1265,31 +1215,18 @@
                 svg += `<line x1="${scaleX(0)}" y1="${origY}" x2="${w - padR + 25}" y2="${origY}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.5" opacity="0.5"/>`;
                 svg += `<line x1="${scaleX(timeline.length - 1)}" y1="${currY}" x2="${w - padR + 25}" y2="${currY}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.5" opacity="0.5"/>`;
 
-                if (hasIncrease) {
-                    const avoidVal = totalSaved;
-                    const histY = scaleY(histPrice); // histPrice is lower, so Y is higher on screen
-                    
-                    svg += `<rect x="${w - padR + 25}" y="${origY}" width="16" height="${currY - origY}" fill="url(#avoidanceStripe)" stroke="#fff" stroke-width="1"/>`;
-                    svg += `<rect x="${w - padR + 25}" y="${currY}" width="16" height="${histY - currY}" fill="var(--danger-red)" stroke="#fff" stroke-width="1"/>`;
+                const avoidVal = totalSaved * 0.4;
+                const saveVal = totalSaved * 0.6;
+                const midY = scaleY(originalPrice - avoidVal);
 
-                    svg += `<text x="${w - padR + 45}" y="${origY + (currY - origY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Avoid $${Math.round(avoidVal)}K</text>`;
-                    svg += `<text x="${w - padR + 45}" y="${currY + (histY - currY)/2 + 3}" font-size="9" font-weight="800" fill="var(--danger-red)">Inc $${Math.round(incVal)}K</text>`;
+                svg += `<rect x="${w - padR + 25}" y="${origY}" width="16" height="${currY - origY}" fill="#fff"/>`;
+                svg += `<rect x="${w - padR + 25}" y="${origY}" width="16" height="${midY - origY}" fill="url(#avoidanceStripe)" stroke="#fff" stroke-width="1"/>`;
+                svg += `<rect x="${w - padR + 25}" y="${midY}" width="16" height="${currY - midY}" fill="var(--success-green)" stroke="#fff" stroke-width="1"/>`;
 
-                    svg += `<text x="${w - padR + 33}" y="${origY - 8}" font-size="9" font-weight="800" fill="var(--text-muted)" text-anchor="middle" letter-spacing="0.5">ACHIEVED</text>`;
-                } else {
-                    const avoidVal = totalSaved * 0.4;
-                    const saveVal = totalSaved * 0.6;
-                    const midY = scaleY(originalPrice - avoidVal);
+                svg += `<text x="${w - padR + 45}" y="${origY + (midY - origY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Avoid $${Math.round(avoidVal)}K</text>`;
+                svg += `<text x="${w - padR + 45}" y="${midY + (currY - midY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Save $${Math.round(saveVal)}K</text>`;
 
-                    svg += `<rect x="${w - padR + 25}" y="${origY}" width="16" height="${currY - origY}" fill="#fff"/>`;
-                    svg += `<rect x="${w - padR + 25}" y="${origY}" width="16" height="${midY - origY}" fill="url(#avoidanceStripe)" stroke="#fff" stroke-width="1"/>`;
-                    svg += `<rect x="${w - padR + 25}" y="${midY}" width="16" height="${currY - midY}" fill="var(--success-green)" stroke="#fff" stroke-width="1"/>`;
-
-                    svg += `<text x="${w - padR + 45}" y="${origY + (midY - origY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Avoid $${Math.round(avoidVal)}K</text>`;
-                    svg += `<text x="${w - padR + 45}" y="${midY + (currY - midY)/2 + 3}" font-size="9" font-weight="800" fill="#059669">Save $${Math.round(saveVal)}K</text>`;
-
-                    svg += `<text x="${w - padR + 33}" y="${origY - 8}" font-size="9" font-weight="800" fill="var(--text-muted)" text-anchor="middle" letter-spacing="0.5">ACHIEVED</text>`;
-                }
+                svg += `<text x="${w - padR + 33}" y="${origY - 8}" font-size="9" font-weight="800" fill="var(--text-muted)" text-anchor="middle" letter-spacing="0.5">ACHIEVED</text>`;
             }
 
             svg += `</svg>`;
@@ -1307,22 +1244,15 @@
             const savingsK = item.ach * item.valuePerPercent;
             const currentPrice = originalPrice - savingsK;
 
-            let histPrice;
-            if (item.hasIncrease) {
-                histPrice = currentPrice - (item.inc * item.valuePerPercent);
-            } else {
-                histPrice = originalPrice * (1 - (item.ach + item.hist) / 100);
-            }
-            
+            const histPct = (item.ach + item.hist) / 100;
             const mktPct = (item.ach + item.mkt) / 100;
             const dmpPct = (item.ach + item.dmp) / 100;
 
+            const histPrice = originalPrice * (1 - histPct);
             const mktPrice = originalPrice * (1 - mktPct);
             const dmpPrice = originalPrice * (1 - dmpPct);
-            
-            const incVal = item.hasIncrease ? (item.inc * item.valuePerPercent) : 0;
 
-            renderTrendSVG(`Price Negotiation Trend - ${item.name}`, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, item.ach / 100, item.hasIncrease, incVal);
+            renderTrendSVG(`Price Negotiation Trend - ${item.name}`, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, item.ach / 100);
         }
 
         function openTrendModal(pbIndex) {
@@ -1337,22 +1267,15 @@
             const originalPrice = savingsK / achPct;
             const currentPrice = originalPrice - savingsK;
 
-            let histPrice;
-            if (pb.hasIncrease) {
-                histPrice = currentPrice - (baseVal * (pb.inc / pb.ach)); 
-            } else {
-                histPrice = originalPrice * (1 - (pb.ach + pb.hist) / 100);
-            }
-            
+            const histPct = (pb.ach + pb.hist) / 100;
             const mktPct = (pb.ach + pb.mkt) / 100;
             const dmpPct = (pb.ach + pb.dmp) / 100;
 
+            const histPrice = originalPrice * (1 - histPct);
             const mktPrice = originalPrice * (1 - mktPct);
             const dmpPrice = originalPrice * (1 - dmpPct);
-            
-            const incVal = pb.hasIncrease ? (baseVal * (pb.inc / pb.ach)) : 0;
 
-            renderTrendSVG(`Price Negotiation Trend - ${pb.name}`, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, achPct, pb.hasIncrease, incVal);
+            renderTrendSVG(`Price Negotiation Trend - ${pb.name}`, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, achPct);
         }
 
         function closeTrendModal() {
@@ -1366,9 +1289,6 @@
             
             const showTargets = document.getElementById('pbTargetViewToggle').checked;
             const splitSaving = document.getElementById('pbSavingViewToggle').checked;
-
-            // Display cost increase legend if split view is enabled
-            document.getElementById('leg-inc').style.display = splitSaving ? 'flex' : 'none';
 
             document.getElementById('leg-mkt').style.display = (showTargets && (globalView === 'all' || globalView === 'mkt')) ? 'flex' : 'none';
             document.getElementById('leg-hist').style.display = (showTargets && (globalView === 'all' || globalView === 'hist')) ? 'flex' : 'none';
@@ -1389,6 +1309,12 @@
 
                 const baseVal = parseFloat(pb.achPrice.replace(/[^0-9.]/g, ''));
                 
+                const savingVal = Math.round(baseVal * 0.6);
+                const avoidVal = baseVal - savingVal;
+                
+                const savingPct = (pb.ach * 0.6).toFixed(1);
+                const avoidPct = (pb.ach - pb.ach * 0.6).toFixed(1);
+
                 const getValNum = (pct) => Math.round(baseVal * (pct / pb.ach));
                 const getValStr = (pct) => `$${getValNum(pct)}K`;
 
@@ -1414,39 +1340,16 @@
                 }
                 
                 if (splitSaving) {
-                    if (pb.hasIncrease) {
-                        const avoidPct = pb.ach.toFixed(1);
-                        const avoidVal = baseVal;
-                        const incPct = pb.inc.toFixed(1);
-                        const incVal = Math.round(baseVal * (pb.inc / pb.ach));
-
-                        html += `
-                            <div class="segment achieved-avoidance" style="height: ${(avoidVal / MAX_Y_VAL) * 100}%">
-                                <span class="seg-pct">${avoidPct}%</span>
-                                <span class="seg-price">$${avoidVal}K</span>
-                            </div>
-                            <div class="segment cost-increase" style="position: absolute; top: 100%; left: 0; width: 100%; height: ${(incVal / MAX_Y_VAL) * 100}%; background-color: var(--danger-red); color: white; border-radius: 0 0 4px 4px; z-index: 10; border-top: 2px solid white; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <span class="seg-pct" style="font-size: 11px; font-weight: 800; text-shadow: 0 0 3px rgba(0,0,0,0.4);">+${incPct}%</span>
-                                <span class="seg-price" style="font-size: 9px; font-weight: 600; text-shadow: 0 0 3px rgba(0,0,0,0.4);">$${incVal}K</span>
-                            </div>
-                        `;
-                    } else {
-                        const savingVal = Math.round(baseVal * 0.6);
-                        const avoidVal = baseVal - savingVal;
-                        const savingPct = (pb.ach * 0.6).toFixed(1);
-                        const avoidPct = (pb.ach - pb.ach * 0.6).toFixed(1);
-
-                        html += `
-                            <div class="segment achieved-avoidance" style="height: ${(avoidVal / MAX_Y_VAL) * 100}%">
-                                <span class="seg-pct">${avoidPct}%</span>
-                                <span class="seg-price">$${avoidVal}K</span>
-                            </div>
-                            <div class="segment achieved-saving" style="height: ${(savingVal / MAX_Y_VAL) * 100}%">
-                                <span class="seg-pct">${savingPct}%</span>
-                                <span class="seg-price">$${savingVal}K</span>
-                            </div>
-                        `;
-                    }
+                    html += `
+                        <div class="segment achieved-avoidance" style="height: ${(avoidVal / MAX_Y_VAL) * 100}%">
+                            <span class="seg-pct">${avoidPct}%</span>
+                            <span class="seg-price">$${avoidVal}K</span>
+                        </div>
+                        <div class="segment achieved-saving" style="height: ${(savingVal / MAX_Y_VAL) * 100}%">
+                            <span class="seg-pct">${savingPct}%</span>
+                            <span class="seg-price">$${savingVal}K</span>
+                        </div>
+                    `;
                 } else {
                     html += `
                         <div class="segment achieved-saving" style="height: ${(achVal / MAX_Y_VAL) * 100}%">
@@ -1479,22 +1382,11 @@
                             <span style="color: var(--success-green); font-size: 12px;">${pb.ach.toFixed(1)}%</span> | $${achVal}K`;
                 
                 if (splitSaving) {
-                    if (pb.hasIncrease) {
-                        const incVal = Math.round(baseVal * (pb.inc / pb.ach));
-                        badgeHtml += `
-                            <div style="margin-top: 3px; padding-top: 3px; border-top: 1px dashed var(--border-color); display: flex; justify-content: center; gap: 8px; font-size: 8.5px;">
-                                <span style="color: #10b981; display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 1px;"></div>$${baseVal}K</span>
-                                <span style="color: var(--danger-red); display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: var(--danger-red); border-radius: 1px;"></div>$${incVal}K</span>
-                            </div>`;
-                    } else {
-                        const savingVal = Math.round(baseVal * 0.6);
-                        const avoidVal = baseVal - savingVal;
-                        badgeHtml += `
+                    badgeHtml += `
                             <div style="margin-top: 3px; padding-top: 3px; border-top: 1px dashed var(--border-color); display: flex; justify-content: center; gap: 8px; font-size: 8.5px;">
                                 <span style="color: var(--success-green); display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: var(--success-green); border-radius: 1px;"></div>$${savingVal}K</span>
                                 <span style="color: #10b981; display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 1px;"></div>$${avoidVal}K</span>
                             </div>`;
-                    }
                 }
 
                 badgeHtml += `
