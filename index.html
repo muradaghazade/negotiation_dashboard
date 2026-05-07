@@ -325,7 +325,7 @@
         .grid-line { width: 100%; border-top: 1px dashed #cbd5e1; }
         .bars-area { display: flex; justify-content: space-around; align-items: flex-end; height: 100%; padding-left: 0px; z-index: 2; position: relative; }
         
-        .bar-group { width: 12%; height: 100%; position: relative; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; transition: transform 0.2s; }
+        .bar-group { flex: 1; margin: 0 4px; height: 100%; position: relative; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; transition: transform 0.2s; max-width: 12%;}
         .bar-group:hover { transform: translateY(-5px); }
         .bar-group::after { content: 'Click for Trend'; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: var(--info-blue); opacity: 0; transition: opacity 0.2s; background: var(--info-bg); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--info-border); pointer-events: none; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 20;}
         .bar-group:hover::after { opacity: 1; }
@@ -457,6 +457,11 @@
         </div>
 
         <div class="filter-section">
+            <label class="filter-title">Filter by Phase</label>
+            <div class="scroll-filter-list" id="phaseFilterList"></div>
+        </div>
+
+        <div class="filter-section">
             <label class="filter-title">Filter by Pricebook</label>
             <div class="scroll-filter-list" id="pbFilterList"></div>
         </div>
@@ -476,7 +481,6 @@
         </div>
     </div>
 
-    <!-- TREND CHART MODAL -->
     <div class="drawer-overlay" id="trendModalOverlay" onclick="closeTrendModal()" style="z-index: 10001;"></div>
     <div class="modal-box" id="trendModalBox">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -487,8 +491,7 @@
             <button onclick="closeTrendModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted);">&times;</button>
         </div>
         <div id="trendChartContainer" style="height: 350px; position: relative;">
-            <!-- SVG injected here -->
-        </div>
+            </div>
     </div>
 
     <div class="container">
@@ -590,6 +593,152 @@
                 <div class="rail-node" style="left: 90%;" id="node-orig">
                     <div class="node-dot"></div>
                     <div class="node-label label-bottom"><div class="label-title">Original Offer</div><div class="label-value">$21.7M</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="coverage-container">
+            <div class="coverage-header">
+                <div class="coverage-title-group">
+                    <h3>Negotiation Coverage & Status by Supplier</h3>
+                    <p>Analysis of supplier-level progress and target achievement.</p>
+                </div>
+                <div class="scope-badge">
+                    <div class="badge-item">
+                        <span class="badge-value" id="supTotalCount">12</span>
+                        <span class="badge-label">Total Suppliers</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dist-bar">
+                <div class="dist-fill dist-target" style="width: 25%"></div>
+                <div class="dist-fill dist-gap" style="width: 58%"></div>
+                <div class="dist-fill dist-none" style="width: 17%"></div>
+            </div>
+
+            <div class="status-grid">
+                <div class="status-card reached">
+                    <span class="status-pct">25%</span>
+                    <span class="status-label">Reached Market Target</span>
+                    <div class="status-metrics">
+                        <div class="stat-group">
+                            <span class="val">3</span>
+                            <span class="lbl">Suppliers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card more">
+                    <span class="status-pct">58%</span>
+                    <span class="status-label">Should Negotiate More</span>
+                    <div class="status-metrics">
+                        <div class="stat-group">
+                            <span class="val">7</span>
+                            <span class="lbl">Suppliers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card untouched">
+                    <span class="status-pct">17%</span>
+                    <span class="status-label">Not Negotiated At All</span>
+                    <div class="status-metrics">
+                        <div class="stat-group">
+                            <span class="val">2</span>
+                            <span class="lbl">Suppliers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header" style="flex-direction: column; align-items: flex-start; gap: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 700;">Savings Value Gap Analysis by Supplier</h3>
+                    <div style="display: flex; gap: 15px; font-size: 12px; font-weight: 600; color: var(--text-dark);">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                            <input type="checkbox" id="supTargetViewToggle" checked onchange="renderSupplierChart()" style="cursor:pointer; accent-color: var(--info-blue);"> Target View
+                        </label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                            <input type="checkbox" id="supSavingViewToggle" checked onchange="renderSupplierChart()" style="cursor:pointer; accent-color: var(--info-blue);"> Saving/Avoidance View
+                        </label>
+                    </div>
+                </div>
+                <div class="chart-legend" id="supLegend">
+                    <div class="legend-item" id="sup-leg-save"><div class="legend-color" style="background: var(--success-green);"></div>Cost Saving</div>
+                    <div class="legend-item" id="sup-leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
+                    <div class="legend-item" id="sup-leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
+                    <div class="legend-item" id="sup-leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
+                    <div class="legend-item" id="sup-leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
+                    <div class="legend-item" id="sup-leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
+                    <div class="legend-item" id="sup-leg-dmp"><div style="width: 16px; border-top: 2px dashed var(--dmp-text); margin-right: 6px;"></div>DMP Forecast Target</div>
+                </div>
+            </div>
+
+            <div class="chart-body">
+                <div class="y-axis-label">Savings Value ($)</div>
+                <div class="y-axis"><span>$600k</span><span>$480k</span><span>$360k</span><span>$240k</span><span>$120k</span><span>$0</span></div>
+                <div class="chart-grid"><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div></div>
+
+                <div class="bars-area" id="supplierBars"></div>
+            </div>
+            <div class="x-axis-title">Supplier</div>
+        </div>
+
+        <div class="coverage-container">
+            <div class="coverage-header">
+                <div class="coverage-title-group">
+                    <h3>Negotiation Coverage & Status by Pricebook</h3>
+                    <p>Analysis of pricebook-level progress and target achievement.</p>
+                </div>
+                <div class="scope-badge">
+                    <div class="badge-item">
+                        <span class="badge-value" id="pbTotalCountHeader">5</span>
+                        <span class="badge-label">Total Pricebooks</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dist-bar">
+                <div class="dist-fill dist-target" style="width: 20%"></div>
+                <div class="dist-fill dist-gap" style="width: 60%"></div>
+                <div class="dist-fill dist-none" style="width: 20%"></div>
+            </div>
+
+            <div class="status-grid">
+                <div class="status-card reached">
+                    <span class="status-pct">20%</span>
+                    <span class="status-label">Reached Market Target</span>
+                    <div class="status-metrics">
+                        <div class="stat-group">
+                            <span class="val">1</span>
+                            <span class="lbl">Pricebook</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card more">
+                    <span class="status-pct">60%</span>
+                    <span class="status-label">Should Negotiate More</span>
+                    <div class="status-metrics">
+                        <div class="stat-group">
+                            <span class="val">3</span>
+                            <span class="lbl">Pricebooks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card untouched">
+                    <span class="status-pct">20%</span>
+                    <span class="status-label">Not Negotiated At All</span>
+                    <div class="status-metrics">
+                        <div class="stat-group">
+                            <span class="val">1</span>
+                            <span class="lbl">Pricebook</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -734,7 +883,6 @@
         </div>
     </div>
 
-    <!-- FULLSCREEN MODAL -->
     <div class="fullscreen-overlay" id="fullscreenOverlay">
         <div class="fullscreen-header" style="flex-direction: column; align-items: flex-start; gap: 15px;">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
@@ -780,12 +928,17 @@
     <script>
         let globalView = 'all';
         let demandBasis = 'hist';
-        let filters = { pb: [], sup: [], cat: [] };
+        let filters = { pb: [], sup: [], cat: [], phase: [] };
 
         const pricebooks = ["Instruments", "Hydraulics", "Electronics", "Bearings", "Tools"];
-        const suppliers = ["Vendor Alpha", "Global Parts", "Tech Systems", "Apex Ltd"];
+        const suppliers = [
+            "Vendor Alpha", "Global Parts", "Tech Systems", "Apex Ltd",
+            "Nova Corp", "Prime Industries", "Nexus Supplies", "Optima Gear",
+            "Vertex Solutions", "Zenith Components", "Aero Dynamics", "Meridian Works"
+        ];
         const categories = ["Core", "Support", "Critical", "Secondary"];
         const statuses = ["reached", "more", "untouched"];
+        const phases = ["Ongoing", "Closed"];
 
         const itemsData = [];
         for (let i = 1; i <= 381; i++) {
@@ -794,6 +947,7 @@
             let sup = suppliers[Math.floor(Math.random() * suppliers.length)];
             let cat = categories[Math.floor(Math.random() * categories.length)];
             let status = statuses[Math.floor(Math.random() * statuses.length)];
+            let phase = phases[Math.floor(Math.random() * phases.length)];
             
             let ach = parseFloat((Math.random() * 8 + 12).toFixed(1));
             let mkt = parseFloat((Math.random() * 4 + 4).toFixed(1));
@@ -811,6 +965,7 @@
 
             let valuePerPercent = Math.random() * 5 + 5; 
 
+            // Logic to introduce a cost increase scenario exclusively to Bearings that need more work
             let hasIncrease = false;
             let inc = 0;
             if (pb === "Bearings" && status === "more" && Math.random() > 0.4) {
@@ -818,19 +973,20 @@
                 inc = parseFloat((Math.random() * 2 + 1).toFixed(1)); 
             }
 
+            // Explicity force Item-SKU-1063 to reflect the user's specific request
             if (itemName === 'Item-SKU-1063') {
                 pb = "Bearings";
                 status = "more";
                 hasIncrease = true;
                 inc = 8.3;
                 ach = 4.5; 
-                mkt = 15.0; 
+                mkt = 15.0; // High gap pushes it to the top of sorting
                 hist = 12.0; 
                 dmp = 10.0;
             }
 
             itemsData.push({
-                name: itemName, pb, sup, cat, status,
+                name: itemName, pb, sup, cat, status, phase,
                 ach: ach,
                 hasIncrease: hasIncrease,
                 inc: inc,
@@ -848,6 +1004,22 @@
             { name: "PB-Electronics-2026", ach: 5.5, achPrice: "$165K", mkt: 1.2, dmp: 1.5, hist: 1.5 },
             { name: "PB-Bearings-2026", ach: 4.8, achPrice: "$120K", mkt: 1.0, dmp: 1.2, hist: 1.5, hasIncrease: true, inc: 2.4 },
             { name: "PB-Tools-2026", ach: 8.1, achPrice: "$180K", mkt: 1.8, dmp: 2.1, hist: 2.5 }
+        ];
+
+        // Mock data for Supplier summary
+        const supplierSummary = [
+            { name: "Vendor Alpha", ach: 7.2, achPrice: "$250K", mkt: 1.5, dmp: 1.8, hist: 2.0 },
+            { name: "Global Parts", ach: 6.5, achPrice: "$180K", mkt: 1.4, dmp: 1.6, hist: 1.8 },
+            { name: "Tech Systems", ach: 5.8, achPrice: "$140K", mkt: 1.2, dmp: 1.5, hist: 1.5, hasIncrease: true, inc: 1.5 },
+            { name: "Apex Ltd", ach: 8.0, achPrice: "$210K", mkt: 1.8, dmp: 2.0, hist: 2.2 },
+            { name: "Nova Corp", ach: 4.5, achPrice: "$95K", mkt: 1.0, dmp: 1.2, hist: 1.4 },
+            { name: "Prime Industries", ach: 6.0, achPrice: "$150K", mkt: 1.3, dmp: 1.5, hist: 1.7 },
+            { name: "Nexus Supplies", ach: 7.5, achPrice: "$220K", mkt: 1.6, dmp: 1.9, hist: 2.1 },
+            { name: "Optima Gear", ach: 5.2, achPrice: "$110K", mkt: 1.1, dmp: 1.3, hist: 1.5 },
+            { name: "Vertex Sol.", ach: 6.8, achPrice: "$190K", mkt: 1.5, dmp: 1.7, hist: 1.9 },
+            { name: "Zenith Comp.", ach: 4.2, achPrice: "$85K", mkt: 0.9, dmp: 1.1, hist: 1.3 },
+            { name: "Aero Dynamics", ach: 8.5, achPrice: "$260K", mkt: 1.9, dmp: 2.2, hist: 2.5 },
+            { name: "Meridian Works", ach: 5.5, achPrice: "$130K", mkt: 1.2, dmp: 1.4, hist: 1.6 }
         ];
 
         const mainPbFilter = document.getElementById('mainPbFilter');
@@ -922,12 +1094,14 @@
             updateCoverageBadges();
             updateBenchmarks();
             renderPricebookChart();
+            renderSupplierChart();
             
             const sortBy = document.getElementById('itemSortSelect').value;
             let filtered = itemsData.filter(i => 
                 (filters.pb.length === 0 || filters.pb.includes(i.pb)) &&
                 (filters.sup.length === 0 || filters.sup.includes(i.sup)) &&
-                (filters.cat.length === 0 || filters.cat.includes(i.cat))
+                (filters.cat.length === 0 || filters.cat.includes(i.cat)) &&
+                (filters.phase.length === 0 || filters.phase.includes(i.phase))
             );
 
             const demandMultiplier = demandBasis === 'dmp' ? 1.12 : 1.0; 
@@ -1088,6 +1262,7 @@
                                 </div>`;
                         }
                     } else {
+                        // Standard view without split
                         const achW = (item.ach / MAX_SCALE) * 100;
                         totalVal = Math.round(item.ach * item.valuePerPercent);
                         html += `
@@ -1401,6 +1576,37 @@
             renderTrendSVG(`Price Negotiation Trend - ${pb.name}`, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, achPct, pb.hasIncrease, incVal);
         }
 
+        // Open trend modal specific to Supplier
+        function openTrendModalSupplier(supIndex) {
+            const sup = supplierSummary[supIndex];
+            
+            const baseVal = parseFloat(sup.achPrice.replace(/[^0-9.]/g, ''));
+            const savingVal = Math.round(baseVal * 0.6);
+            const avoidVal = baseVal - savingVal;
+
+            const savingsK = parseFloat(sup.achPrice.replace(/[^0-9.]/g, ''));
+            const achPct = sup.ach / 100;
+            const originalPrice = savingsK / achPct;
+            const currentPrice = originalPrice - savingsK;
+
+            let histPrice;
+            if (sup.hasIncrease) {
+                histPrice = currentPrice - (baseVal * (sup.inc / sup.ach)); 
+            } else {
+                histPrice = originalPrice * (1 - (sup.ach + sup.hist) / 100);
+            }
+            
+            const mktPct = (sup.ach + sup.mkt) / 100;
+            const dmpPct = (sup.ach + sup.dmp) / 100;
+
+            const mktPrice = originalPrice * (1 - mktPct);
+            const dmpPrice = originalPrice * (1 - dmpPct);
+            
+            const incVal = sup.hasIncrease ? (baseVal * (sup.inc / sup.ach)) : 0;
+
+            renderTrendSVG(`Supplier Negotiation Trend - ${sup.name}`, originalPrice, currentPrice, histPrice, mktPrice, dmpPrice, achPct, sup.hasIncrease, incVal);
+        }
+
         function closeTrendModal() {
             document.getElementById('trendModalOverlay').style.display = 'none';
             document.getElementById('trendModalBox').style.display = 'none';
@@ -1554,15 +1760,153 @@
             });
         }
 
-        buildFilterList('pbFilterList', pricebooks, 'pb');
-        buildFilterList('supFilterList', suppliers, 'sup');
-        buildFilterList('catFilterList', categories, 'cat');
+        function renderSupplierChart() {
+            const container = document.getElementById('supplierBars');
+            container.innerHTML = '';
+            
+            const showTargets = document.getElementById('supTargetViewToggle').checked;
+            const splitSaving = document.getElementById('supSavingViewToggle').checked;
 
-        document.getElementById('itemSortSelect').onchange = updateUI;
-        document.getElementById('expandChartBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'block'; document.body.style.overflow = 'hidden'; };
-        document.getElementById('closeFullscreenBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; };
+            // Display cost increase legend if split view is enabled
+            document.getElementById('sup-leg-inc').style.display = splitSaving ? 'flex' : 'none';
 
-        updateUI();
+            document.getElementById('sup-leg-mkt').style.display = (showTargets && (globalView === 'all' || globalView === 'mkt')) ? 'flex' : 'none';
+            document.getElementById('sup-leg-hist').style.display = (showTargets && (globalView === 'all' || globalView === 'hist')) ? 'flex' : 'none';
+            document.getElementById('sup-leg-dmp').style.display = showTargets ? 'flex' : 'none';
+            
+            document.getElementById('sup-leg-save').style.display = splitSaving ? 'flex' : 'none';
+            document.getElementById('sup-leg-avoid').style.display = splitSaving ? 'flex' : 'none';
+            document.getElementById('sup-leg-achieved').style.display = splitSaving ? 'none' : 'flex';
+            
+            const MAX_Y_VAL = 600;
+
+            supplierSummary.forEach((sup, index) => {
+                const group = document.createElement('div');
+                group.className = 'bar-group';
+                group.onclick = () => openTrendModalSupplier(index);
+
+                let html = ``;
+
+                const baseVal = parseFloat(sup.achPrice.replace(/[^0-9.]/g, ''));
+                
+                const getValNum = (pct) => Math.round(baseVal * (pct / sup.ach));
+                const getValStr = (pct) => `$${getValNum(pct)}K`;
+
+                const histVal = getValNum(sup.hist);
+                const dmpVal = getValNum(sup.dmp);
+                const mktVal = getValNum(sup.mkt);
+                const achVal = baseVal;
+
+                if (showTargets && (globalView === 'all' || globalView === 'hist')) {
+                    html += `
+                        <div class="segment historical" style="height: ${(histVal / MAX_Y_VAL) * 100}%">
+                            <span class="seg-pct">+${sup.hist}%</span>
+                        </div>`;
+                }
+                
+                if (showTargets && (globalView === 'all' || globalView === 'mkt')) {
+                    html += `
+                        <div class="segment market" style="height: ${(mktVal / MAX_Y_VAL) * 100}%">
+                            <span class="seg-pct">+${sup.mkt}%</span>
+                        </div>`;
+                }
+                
+                if (splitSaving) {
+                    if (sup.hasIncrease) {
+                        const avoidPct = sup.ach.toFixed(1);
+                        const avoidVal = baseVal;
+                        const incPct = sup.inc.toFixed(1);
+                        const incVal = Math.round(baseVal * (sup.inc / sup.ach));
+
+                        html += `
+                            <div class="segment achieved-avoidance" style="height: ${(avoidVal / MAX_Y_VAL) * 100}%">
+                                <span class="seg-pct">${avoidPct}%</span>
+                            </div>
+                            <div class="segment cost-increase" style="position: absolute; top: 100%; left: 0; width: 100%; height: ${(incVal / MAX_Y_VAL) * 100}%; background-color: var(--danger-red); color: white; border-radius: 0 0 4px 4px; z-index: 10; border-top: 2px solid white; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <span class="seg-pct" style="font-size: 11px; font-weight: 800; text-shadow: 0 0 3px rgba(0,0,0,0.4);">+${incPct}%</span>
+                            </div>
+                        `;
+                    } else {
+                        const savingVal = Math.round(baseVal * 0.6);
+                        const avoidVal = baseVal - savingVal;
+                        const savingPct = (sup.ach * 0.6).toFixed(1);
+                        const avoidPct = (sup.ach - sup.ach * 0.6).toFixed(1);
+
+                        html += `
+                            <div class="segment achieved-avoidance" style="height: ${(avoidVal / MAX_Y_VAL) * 100}%">
+                                <span class="seg-pct">${avoidPct}%</span>
+                            </div>
+                            <div class="segment achieved-saving" style="height: ${(savingVal / MAX_Y_VAL) * 100}%">
+                                <span class="seg-pct">${savingPct}%</span>
+                            </div>
+                        `;
+                    }
+                } else {
+                    html += `
+                        <div class="segment achieved-saving" style="height: ${(achVal / MAX_Y_VAL) * 100}%">
+                            <span class="seg-pct">${sup.ach.toFixed(1)}%</span>
+                        </div>
+                    `;
+                }
+                
+                html += `<div class="x-axis-label">${sup.name}</div>`;
+                
+                if (showTargets && (globalView === 'all' || globalView === 'dmp')) {
+                    const dmpTargetPercent = ((achVal + dmpVal) / MAX_Y_VAL) * 100;
+                    const targetPctStr = (sup.ach + sup.dmp).toFixed(1) + '%';
+
+                    html += `
+                        <div class="dmp-target-line" style="bottom: ${dmpTargetPercent}%;">
+                            <div style="position: absolute; left: 100%; margin-left: 2px; top: -8px; font-size: 8px; font-weight: 800; color: var(--dmp-text); background: var(--dmp-light); padding: 1px 3px; border-radius: 4px; border: 1px dashed var(--dmp-text); white-space: nowrap;">
+                                ${targetPctStr}
+                            </div>
+                        </div>`;
+                }
+
+                let badgeHtml = `
+                    <div style="position: absolute; top: -20px; width: 100%; display: flex; justify-content: center; align-items: center; z-index: 30; pointer-events: none;">
+                        <div style="background: white; color: var(--text-dark); font-size: 10px; font-weight: 800; padding: 4px 6px; border-radius: 8px; border: 1px solid var(--border-color); white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); text-align: center; line-height: 1.3;">
+                            <span style="color: var(--success-green); font-size: 10px;">${sup.ach.toFixed(1)}%</span> | $${achVal}K
+                        </div>
+                    </div>`;
+
+                html += badgeHtml;
+
+                group.innerHTML = html;
+                container.appendChild(group);
+            });
+        }
+
+        window.onload = function() {
+            pricebooks.forEach(pb => {
+                const optMain = document.createElement('option');
+                optMain.value = pb;
+                optMain.innerText = pb;
+                mainPbFilter.appendChild(optMain);
+                
+                const optFs = document.createElement('option');
+                optFs.value = pb;
+                optFs.innerText = pb;
+                fsPbFilter.appendChild(optFs);
+            });
+            
+            mainPbFilter.onchange = updateUI;
+            fsPbFilter.onchange = updateUI;
+            document.getElementById('mainStatusFilter').onchange = updateUI;
+            document.getElementById('fsStatusFilter').onchange = updateUI;
+            
+            buildFilterList('phaseFilterList', phases, 'phase');
+            buildFilterList('pbFilterList', pricebooks, 'pb');
+            buildFilterList('supFilterList', suppliers, 'sup');
+            buildFilterList('catFilterList', categories, 'cat');
+
+            document.getElementById('itemSortSelect').onchange = updateUI;
+            document.getElementById('expandChartBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'block'; document.body.style.overflow = 'hidden'; };
+            document.getElementById('closeFullscreenBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; };
+
+            updateUI();
+        };
+
     </script>
 </body>
 </html>
