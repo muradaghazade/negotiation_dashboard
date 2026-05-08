@@ -400,20 +400,20 @@
         
         .hz-bar-inner { width: 100%; height: 100%; display: flex; background-color: var(--neutral-bg); border-radius: 4px; overflow: hidden; }
         
-        .hz-segment { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #ffffff; transition: filter 0.2s, width 0.3s ease; overflow: visible; position: relative; min-width: 0; z-index: 5; }
+        .hz-segment { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: filter 0.2s, width 0.3s ease; overflow: visible; position: relative; min-width: 0; z-index: 5; }
         .hz-segment:hover { filter: brightness(1.05); z-index: 15; }
         .hz-seg-pct { font-size: 10px; font-weight: 800; line-height: 1; text-shadow: 0 0 3px rgba(255, 255, 255, 0.7); }
         .hz-seg-price { font-size: 8.5px; font-weight: 600; opacity: 0.9; margin-top: 1px; text-shadow: 0 0 3px rgba(255, 255, 255, 0.7); }
         
         /* Item Bar Achieved Segments */
-        .hz-segment.achieved-avoidance { background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px); color: white; border-right: 1px solid rgba(255,255,255,0.3); }
-        .hz-segment.achieved-saving { background-color: var(--success-green); color: white; border-right: none; }
+        .hz-segment.achieved-saving { background-color: var(--success-green); color: white; border-right: 1px solid rgba(255,255,255,0.3); }
+        .hz-segment.achieved-avoidance { background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px); color: white; border-right: none; }
         
         .hz-segment.achieved-avoidance .hz-seg-pct, .hz-segment.achieved-avoidance .hz-seg-price,
         .hz-segment.achieved-saving .hz-seg-pct, .hz-segment.achieved-saving .hz-seg-price { text-shadow: 0 0 3px rgba(0, 0, 0, 0.4); }
         
-        .hz-segment.market { background-color: var(--market-light); color: var(--market-text); }
-        .hz-segment.historical { background-color: var(--hist-light); color: var(--hist-text); }
+        .hz-segment.market { background-color: var(--market-light); color: var(--market-text); border-left: 1px solid #ffffff;}
+        .hz-segment.historical { background-color: var(--hist-light); color: var(--hist-text); border-left: 1px solid #ffffff;}
         
         .sort-select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 600; color: var(--text-dark); background-color: #fff; cursor: pointer; outline: none; }
         .sort-select:focus { border-color: var(--info-blue); }
@@ -984,6 +984,9 @@
                 inc = parseFloat((Math.random() * 2 + 1).toFixed(1)); 
             }
 
+            // A flag to determine if the item was negotiated in the past
+            let negotiatedBefore = Math.random() > 0.4;
+
             // Explicity force Item-SKU-1063 to reflect the user's specific request
             if (itemName === 'Item-SKU-1063') {
                 pb = "Bearings";
@@ -994,6 +997,7 @@
                 mkt = 15.0; // High gap pushes it to the top of sorting
                 hist = 12.0; 
                 dmp = 10.0;
+                negotiatedBefore = true;
             }
 
             itemsData.push({
@@ -1005,7 +1009,8 @@
                 mkt: mkt,
                 dmp: dmp,
                 hist: hist,
-                valuePerPercent: valuePerPercent 
+                valuePerPercent: valuePerPercent,
+                negotiatedBefore: negotiatedBefore 
             });
         }
 
@@ -1254,7 +1259,19 @@
                 
                 let friendlyStatus = item.status === 'reached' ? 'Target Reached' : (item.status === 'untouched' ? 'Untouched' : 'Needs Work');
 
-                let html = `<div class="hz-label">${item.name}<br><small style="color:var(--text-muted)">${item.sup} | ${friendlyStatus}</small></div>`;
+                // Show a clickable icon if the item was negotiated before
+                let historyIcon = item.negotiatedBefore ? 
+                    `<span onclick="openItemTrendModal('${item.name}'); event.stopPropagation();" title="Negotiated Before - View Price Trend History" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; background:#f0f9ff; color:#0ea5e9; border:1px solid #7dd3fc; border-radius:4px; padding:2px; margin-left:6px; vertical-align:middle; transition: background 0.2s;" onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f9ff'">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </span>` : '';
+
+                let html = `<div class="hz-label" style="overflow:visible;">
+                                ${item.name}${historyIcon}<br>
+                                <small style="color:var(--text-muted)">${item.sup} | ${friendlyStatus}</small>
+                            </div>`;
                 
                 html += `<div class="hz-bar-stack" onclick="openItemTrendModal('${item.name}')">`;
                 html += `<div class="hz-bar-inner">`
@@ -1271,13 +1288,13 @@
                             totalVal = avoidVal; // Total achieved reduction from new offer is just avoidance
                             
                             html += `
+                                <div class="hz-segment cost-increase" style="width: ${incW}%; background-color: var(--danger-red); color: white; border-right: 1px solid rgba(255,255,255,0.3);">
+                                    <span class="hz-seg-pct">+${item.inc.toFixed(1)}%</span>
+                                    <span class="hz-seg-price">$${incVal}K</span>
+                                </div>
                                 <div class="hz-segment achieved-avoidance" style="width: ${avoidW}%">
                                     <span class="hz-seg-pct">${item.ach.toFixed(1)}%</span>
                                     <span class="hz-seg-price">$${avoidVal}K</span>
-                                </div>
-                                <div class="hz-segment cost-increase" style="width: ${incW}%; background-color: var(--danger-red); color: white;">
-                                    <span class="hz-seg-pct">+${item.inc.toFixed(1)}%</span>
-                                    <span class="hz-seg-price">$${incVal}K</span>
                                 </div>`;
                         } else {
                             const avoidW = (item.ach * 0.4 / MAX_SCALE) * 100;
@@ -1291,14 +1308,13 @@
                             totalVal = avoidVal + savingVal;
                             
                             html += `
-                                <div class="hz-segment achieved-avoidance" style="width: ${avoidW}%">
-                                    <span class="hz-seg-pct">${avoidPct}%</span>
-                                    <span class="hz-seg-price">$${avoidVal}K</span>
-                                </div>`;
-                            html += `
                                 <div class="hz-segment achieved-saving" style="width: ${savingW}%">
                                     <span class="hz-seg-pct">${savingPct}%</span>
                                     <span class="hz-seg-price">$${savingVal}K</span>
+                                </div>
+                                <div class="hz-segment achieved-avoidance" style="width: ${avoidW}%">
+                                    <span class="hz-seg-pct">${avoidPct}%</span>
+                                    <span class="hz-seg-price">$${avoidVal}K</span>
                                 </div>`;
                         }
                     } else {
@@ -1342,8 +1358,8 @@
                     if (item.hasIncrease) {
                         badgeHtml += `
                             <div style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed var(--border-color); display: flex; justify-content: center; gap: 8px; font-size: 8.5px;">
-                                <span style="color: #10b981; display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 1px;"></div>$${avoidVal}K</span>
                                 <span style="color: var(--danger-red); display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: var(--danger-red); border-radius: 1px;"></div>$${incVal}K</span>
+                                <span style="color: #10b981; display: flex; align-items: center; gap: 3px;"><div style="width: 6px; height: 6px; background: repeating-linear-gradient(45deg, #10b981, #10b981 2px, #6ee7b7 2px, #6ee7b7 4px); border-radius: 1px;"></div>$${avoidVal}K</span>
                             </div>`;
                     } else {
                         badgeHtml += `
