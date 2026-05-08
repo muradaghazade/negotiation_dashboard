@@ -512,6 +512,17 @@
                         </span>
                     </button>
                 </div>
+                
+                <div id="histTimeRangeContainer" style="display: flex; gap: 8px; align-items: center; background: #e2e8f0; padding: 4px 8px; border-radius: 10px; transition: opacity 0.3s;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Hist. Range:</span>
+                    <select id="histRangeSelect" class="sort-select" style="padding: 4px 8px; border: none; font-size: 12px;" onchange="handleHistRangeChange()">
+                        <option value="1">Last Year</option>
+                        <option value="3">Last 3 Years</option>
+                        <option value="custom">Custom...</option>
+                    </select>
+                    <input type="number" id="histCustomInput" style="display: none; width: 50px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 12px; font-weight: 600; outline: none;" placeholder="Yrs" min="1" max="20" onchange="handleHistRangeChange()">
+                </div>
+
                 <button class="filter-trigger-btn" onclick="toggleDrawer(true)">
                     <span>Filters</span>
                     <small>▼</small>
@@ -1069,12 +1080,41 @@
             });
         }
 
+        // Logic to handle changing historical time ranges
+        function handleHistRangeChange() {
+            const select = document.getElementById('histRangeSelect');
+            const customInput = document.getElementById('histCustomInput');
+            if (select.value === 'custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
+            }
+            
+            // Randomize historical data slightly to simulate picking different years
+            itemsData.forEach(i => i.hist = parseFloat((Math.random() * 4 + 2).toFixed(1)));
+            pricebookSummary.forEach(p => p.hist = parseFloat((Math.random() * 2 + 1).toFixed(1)));
+            supplierSummary.forEach(s => s.hist = parseFloat((Math.random() * 2 + 1).toFixed(1)));
+            
+            updateUI();
+        }
+
         function setGlobalView(view) {
             globalView = view;
             document.querySelectorAll('.toggle-btn').forEach(btn => {
                 const text = btn.innerText.toLowerCase();
                 btn.classList.toggle('active', text.includes(view === 'dmp' ? 'dmp' : (view === 'mkt' ? 'market' : (view === 'hist' ? 'histor' : 'all'))));
             });
+            
+            // Show/Hide History Range Dropdown
+            const histContainer = document.getElementById('histTimeRangeContainer');
+            if (view === 'all' || view === 'hist') {
+                histContainer.style.opacity = '1';
+                histContainer.style.pointerEvents = 'auto';
+            } else {
+                histContainer.style.opacity = '0.3'; // Dim instead of fully hiding to keep header spacing stable
+                histContainer.style.pointerEvents = 'none';
+            }
+
             updateUI();
         }
 
@@ -1904,7 +1944,8 @@
             document.getElementById('expandChartBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'block'; document.body.style.overflow = 'hidden'; };
             document.getElementById('closeFullscreenBtn').onclick = () => { document.getElementById('fullscreenOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; };
 
-            updateUI();
+            // Trigger initial UI setup
+            setGlobalView('all');
         };
 
     </script>
