@@ -266,12 +266,13 @@
         
         .rail-sub-saving {
             width: 60%; height: 100%; background-color: var(--success-green); position: relative;
+            border-radius: 0 9999px 9999px 0;
         }
         
         .rail-sub-avoidance {
             width: 40%; height: 100%; 
             background: repeating-linear-gradient(45deg, #10b981, #10b981 4px, #6ee7b7 4px, #6ee7b7 8px);
-            border-radius: 0 9999px 9999px 0; position: relative;
+            position: relative;
         }
 
         .rail-permanent-label {
@@ -575,11 +576,11 @@
             <div class="rail-wrapper" id="benchmarkRail">
                 <div class="rail-base"></div>
                 <div class="rail-achieved">
-                    <div class="rail-sub-saving">
-                        <div class="rail-permanent-label label-down">Saving<span>$830.1K</span></div>
-                    </div>
                     <div class="rail-sub-avoidance">
-                        <div class="rail-permanent-label label-up">Avoidance<span>$553.4K</span></div>
+                        <div class="rail-permanent-label label-down">Avoidance<span>$553.4K</span></div>
+                    </div>
+                    <div class="rail-sub-saving">
+                        <div class="rail-permanent-label label-up">Saving<span>$830.1K</span></div>
                     </div>
                 </div>
                 <div class="rail-gap" id="railGapVisual"></div>
