@@ -24,8 +24,6 @@
             --neutral-bg: #f1f5f9;
             
             --chart-achieved: #52b788;
-            --market-light: #e0e7ff;
-            --market-text: #4338ca;
             --dmp-light: #f3e8ff;
             --dmp-text: #6d28d9;
             --hist-light: #fef9c3;
@@ -352,7 +350,6 @@
         .segment.achieved-avoidance .seg-pct, .segment.achieved-avoidance .seg-price,
         .segment.achieved-saving .seg-pct, .segment.achieved-saving .seg-price { text-shadow: 0 0 3px rgba(0, 0, 0, 0.4); } 
         
-        .segment.market { background-color: var(--market-light); color: var(--market-text); }
         .segment.dmp { background-color: var(--dmp-light); color: var(--dmp-text); }
         .segment.historical { background-color: var(--hist-light); color: var(--hist-text); border-radius: 4px 4px 0 0; }
         .x-axis-label { position: absolute; top: calc(100% + 55px); right: 50%; transform: rotate(-45deg); transform-origin: top right; font-size: 11px; font-weight: 600; color: #475569; white-space: nowrap; }
@@ -413,7 +410,6 @@
         .hz-segment.achieved-avoidance .hz-seg-pct, .hz-segment.achieved-avoidance .hz-seg-price,
         .hz-segment.achieved-saving .hz-seg-pct, .hz-segment.achieved-saving .hz-seg-price { text-shadow: 0 0 3px rgba(0, 0, 0, 0.4); }
         
-        .hz-segment.market { background-color: var(--market-light); color: var(--market-text); border-left: 1px solid #ffffff;}
         .hz-segment.historical { background-color: var(--hist-light); color: var(--hist-text); border-left: 1px solid #ffffff;}
         
         .sort-select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 600; color: var(--text-dark); background-color: #fff; cursor: pointer; outline: none; }
@@ -505,11 +501,10 @@
                 <div class="global-toggle">
                     <button class="toggle-btn active" onclick="setGlobalView('all')">All</button>
                     <button class="toggle-btn" onclick="setGlobalView('hist')">Historical</button>
-                    <button class="toggle-btn" onclick="setGlobalView('mkt')">Market</button>
                     <button class="toggle-btn" onclick="setGlobalView('dmp')">
                         DMP Forecast
                         <span class="dmp-info-icon" onclick="event.stopPropagation();">i
-                            <span class="dmp-popup">DMP Forecast is calculated by historical PO data, market, and inflation using regression models.</span>
+                            <span class="dmp-popup">DMP Forecast is calculated by historical PO data and inflation using regression models.</span>
                         </span>
                     </button>
                 </div>
@@ -590,10 +585,6 @@
                     <div class="node-dot"></div>
                     <div class="node-label label-bottom"><div class="label-title">Best Hist.</div><div class="label-value">$18.5M</div></div>
                 </div>
-                <div class="rail-node" style="left: 25%;" id="node-mkt">
-                    <div class="node-dot"></div>
-                    <div class="node-label label-bottom"><div class="label-title">Market</div><div class="label-value">$18.9M</div></div>
-                </div>
                 <div class="rail-node node-target" style="left: 40%;" id="node-dmp">
                     <div class="node-dot"></div>
                     <div class="node-label label-top"><div class="label-title">DMP Forecast</div><div class="label-value">$19.4M</div></div>
@@ -632,7 +623,7 @@
             <div class="status-grid">
                 <div class="status-card reached">
                     <span class="status-pct">25%</span>
-                    <span class="status-label">Reached Market Target</span>
+                    <span class="status-label">Reached Target</span>
                     <div class="status-metrics">
                         <div class="stat-group">
                             <span class="val">3</span>
@@ -683,7 +674,6 @@
                     <div class="legend-item" id="sup-leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
                     <div class="legend-item" id="sup-leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
                     <div class="legend-item" id="sup-leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
-                    <div class="legend-item" id="sup-leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
                     <div class="legend-item" id="sup-leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
                     <div class="legend-item" id="sup-leg-dmp"><div style="width: 16px; border-top: 2px dashed var(--dmp-text); margin-right: 6px;"></div>DMP Forecast Target</div>
                 </div>
@@ -722,7 +712,7 @@
             <div class="status-grid">
                 <div class="status-card reached">
                     <span class="status-pct">20%</span>
-                    <span class="status-label">Reached Market Target</span>
+                    <span class="status-label">Reached Target</span>
                     <div class="status-metrics">
                         <div class="stat-group">
                             <span class="val">1</span>
@@ -773,7 +763,6 @@
                     <div class="legend-item" id="leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
                     <div class="legend-item" id="leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
                     <div class="legend-item" id="leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
-                    <div class="legend-item" id="leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
                     <div class="legend-item" id="leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
                     <div class="legend-item" id="leg-dmp"><div style="width: 16px; border-top: 2px dashed var(--dmp-text); margin-right: 6px;"></div>DMP Forecast Target</div>
                 </div>
@@ -862,7 +851,6 @@
                         </select>
                         <select id="itemSortSelect" class="sort-select">
                             <option value="ach">Sort by Achieved Discount</option>
-                            <option value="mkt">Sort by Left to Market</option>
                             <option value="dmp">Sort by Left to DMP Forecast</option>
                             <option value="hist">Sort by Left Historical Best</option>
                             <option value="pot">Sort by Total Potential</option>
@@ -886,7 +874,6 @@
                 <div class="legend-item leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
                 <div class="legend-item leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
                 <div class="legend-item leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
-                <div class="legend-item leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
                 <div class="legend-item leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
                 <div class="legend-item leg-dmp"><div style="width: 16px; border-top: 2px dashed var(--dmp-text); margin-right: 6px;"></div>DMP Forecast Target</div>
             </div>
@@ -920,7 +907,6 @@
                     <div class="legend-item leg-avoid"><div class="legend-color" style="background: repeating-linear-gradient(45deg, #10b981, #10b981 3px, #6ee7b7 3px, #6ee7b7 6px);"></div>Cost Avoidance</div>
                     <div class="legend-item leg-inc" style="display:none;"><div class="legend-color" style="background: var(--danger-red);"></div>Cost Increase</div>
                     <div class="legend-item leg-achieved" style="display:none;"><div class="legend-color" style="background: var(--success-green);"></div>Achieved Discount</div>
-                    <div class="legend-item leg-mkt"><div class="legend-color market" style="background: #e0e7ff"></div>Left to Market</div>
                     <div class="legend-item leg-hist"><div class="legend-color historical" style="background: #fef9c3"></div>Left to Hist. Best</div>
                     <div class="legend-item leg-dmp"><div style="width: 16px; border-top: 2px dashed var(--dmp-text); margin-right: 6px;"></div>DMP Forecast Target</div>
                 </div>
@@ -1108,7 +1094,7 @@
             globalView = view;
             document.querySelectorAll('.toggle-btn').forEach(btn => {
                 const text = btn.innerText.toLowerCase();
-                btn.classList.toggle('active', text.includes(view === 'dmp' ? 'dmp' : (view === 'mkt' ? 'market' : (view === 'hist' ? 'histor' : 'all'))));
+                btn.classList.toggle('active', text.includes(view === 'dmp' ? 'dmp' : (view === 'hist' ? 'histor' : 'all')));
             });
             
             // Show/Hide History Range Dropdown
@@ -1154,10 +1140,9 @@
             
             const sorted = filtered.sort((a,b) => {
                 if(sortBy === 'ach') return b.ach - a.ach;
-                if(sortBy === 'mkt') return b.mkt - a.mkt;
                 if(sortBy === 'dmp') return b.dmp - a.dmp;
                 if(sortBy === 'hist') return b.hist - a.hist;
-                return (b.mkt + b.dmp + b.hist) - (a.mkt + a.dmp + a.hist);
+                return (b.dmp + b.hist) - (a.dmp + a.hist);
             });
 
             // Local filters for Main Top 10 View
@@ -1198,8 +1183,6 @@
             const el = document.getElementById('potentialSavingsLabel');
             if (globalView === 'all' || globalView === 'dmp') {
                 el.innerHTML = `~4.4% ($949,961)`;
-            } else if (globalView === 'mkt') {
-                el.innerHTML = `~6.7% ($1,449,961)`;
             } else if (globalView === 'hist') {
                 el.innerHTML = `~8.5% ($1,849,961)`;
             }
@@ -1208,13 +1191,13 @@
         function updateCoverageBadges() {
             const topPill = document.getElementById('topCoveragePill');
             const badgeVal = document.getElementById('coverageBadgeVal');
-            let coverage = globalView === 'mkt' ? "90%" : (globalView === 'dmp' ? "100%" : "80%");
+            let coverage = globalView === 'dmp' ? "100%" : "80%";
             topPill.innerText = `Negotiation Coverage: ${coverage}`;
             badgeVal.innerText = coverage;
         }
 
         function updateBenchmarks() {
-            const nodes = { hist: document.getElementById('node-hist'), mkt: document.getElementById('node-mkt'), dmp: document.getElementById('node-dmp') };
+            const nodes = { hist: document.getElementById('node-hist'), dmp: document.getElementById('node-dmp') };
             const gapBadge = document.getElementById('gapBadge');
             const visualGap = document.getElementById('railGapVisual');
             Object.values(nodes).forEach(n => { n.style.opacity = "1"; n.classList.remove('node-target'); });
@@ -1226,7 +1209,6 @@
             } else {
                 Object.keys(nodes).forEach(key => { if (key !== globalView) nodes[key].style.opacity = "0"; else nodes[key].classList.add('node-target'); });
                 if(globalView === 'hist') { gapBadge.innerText = "Gap to Hist: $1.85M"; visualGap.style.width = "55%"; visualGap.style.right = "35%"; }
-                if(globalView === 'mkt') { gapBadge.innerText = "Gap to Market: $1.45M"; visualGap.style.width = "40%"; visualGap.style.right = "35%"; }
                 if(globalView === 'dmp') { gapBadge.innerText = "Gap to DMP: $950K"; visualGap.style.width = "25%"; visualGap.style.right = "35%"; }
             }
         }
@@ -1249,7 +1231,6 @@
                 leg.querySelector('.leg-avoid').style.display = splitSaving ? 'flex' : 'none';
                 leg.querySelector('.leg-achieved').style.display = splitSaving ? 'none' : 'flex';
                 
-                leg.querySelector('.leg-mkt').style.display = (showTargets && (globalView === 'all' || globalView === 'mkt')) ? 'flex' : 'none';
                 leg.querySelector('.leg-hist').style.display = (showTargets && (globalView === 'all' || globalView === 'hist')) ? 'flex' : 'none';
                 leg.querySelector('.leg-dmp').style.display = showTargets ? 'flex' : 'none';
             });
@@ -1330,7 +1311,6 @@
                     }
                 }
 
-                if (showTargets && (globalView === 'all' || globalView === 'mkt')) html += `<div class="hz-segment market" style="width: ${(item.mkt*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.mkt*mult).toFixed(1)}%</span></div>`;
                 if (showTargets && (globalView === 'all' || globalView === 'hist')) html += `<div class="hz-segment historical" style="width: ${(item.hist*mult/MAX_SCALE)*100}%"><span class="hz-seg-pct">+${(item.hist*mult).toFixed(1)}%</span></div>`;
                 
                 html += `</div>`; // close hz-bar-inner
@@ -1443,7 +1423,6 @@
 
             let benchmarks = [
                 { label: "Historical Best", price: histPrice, color: "var(--hist-text)", origY: scaleY(histPrice), y: scaleY(histPrice) },
-                { label: "Market Avg", price: mktPrice, color: "var(--market-text)", origY: scaleY(mktPrice), y: scaleY(mktPrice) },
                 { label: "DMP Forecast", price: dmpPrice, color: "var(--dmp-text)", origY: scaleY(dmpPrice), y: scaleY(dmpPrice) }
             ];
 
@@ -1679,7 +1658,6 @@
             // Display cost increase legend if split view is enabled
             document.getElementById('leg-inc').style.display = splitSaving ? 'flex' : 'none';
 
-            document.getElementById('leg-mkt').style.display = (showTargets && (globalView === 'all' || globalView === 'mkt')) ? 'flex' : 'none';
             document.getElementById('leg-hist').style.display = (showTargets && (globalView === 'all' || globalView === 'hist')) ? 'flex' : 'none';
             document.getElementById('leg-dmp').style.display = showTargets ? 'flex' : 'none';
             
@@ -1711,14 +1689,6 @@
                         <div class="segment historical" style="height: ${(histVal / MAX_Y_VAL) * 100}%">
                             <span class="seg-pct">+${pb.hist}%</span>
                             <span class="seg-price">${getValStr(pb.hist)}</span>
-                        </div>`;
-                }
-                
-                if (showTargets && (globalView === 'all' || globalView === 'mkt')) {
-                    html += `
-                        <div class="segment market" style="height: ${(mktVal / MAX_Y_VAL) * 100}%">
-                            <span class="seg-pct">+${pb.mkt}%</span>
-                            <span class="seg-price">${getValStr(pb.mkt)}</span>
                         </div>`;
                 }
                 
@@ -1827,7 +1797,6 @@
             // Display cost increase legend if split view is enabled
             document.getElementById('sup-leg-inc').style.display = splitSaving ? 'flex' : 'none';
 
-            document.getElementById('sup-leg-mkt').style.display = (showTargets && (globalView === 'all' || globalView === 'mkt')) ? 'flex' : 'none';
             document.getElementById('sup-leg-hist').style.display = (showTargets && (globalView === 'all' || globalView === 'hist')) ? 'flex' : 'none';
             document.getElementById('sup-leg-dmp').style.display = showTargets ? 'flex' : 'none';
             
@@ -1858,13 +1827,6 @@
                     html += `
                         <div class="segment historical" style="height: ${(histVal / MAX_Y_VAL) * 100}%">
                             <span class="seg-pct">+${sup.hist}%</span>
-                        </div>`;
-                }
-                
-                if (showTargets && (globalView === 'all' || globalView === 'mkt')) {
-                    html += `
-                        <div class="segment market" style="height: ${(mktVal / MAX_Y_VAL) * 100}%">
-                            <span class="seg-pct">+${sup.mkt}%</span>
                         </div>`;
                 }
                 
